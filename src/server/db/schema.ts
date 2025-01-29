@@ -38,42 +38,66 @@ export const dishes = createTable(
 );
 
 // Menu for a week
-export const menus = createTable("menus", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-  from: date("from", { mode: "date" }).notNull(), // Should always be Monday
+export const menus = createTable(
+  "menus",
+  {
+    id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+    from: date("from", { mode: "date" }).notNull(), // Should always be Monday
 
-  mondayDish1: integer("monday_dish_1_id")
-    .notNull()
-    .references(() => dishes.id),
-  mondayDish2: integer("monday_dish_2_id")
-    .notNull()
-    .references(() => dishes.id),
+    mondayDish1: integer("monday_dish_1_id")
+      .notNull()
+      .references(() => dishes.id),
+    mondayDish2: integer("monday_dish_2_id")
+      .notNull()
+      .references(() => dishes.id),
 
-  tuesdayDish1: integer("tuesday_dish_1_id")
-    .notNull()
-    .references(() => dishes.id),
-  tuesdayDish2: integer("tuesday_dish_2_id")
-    .notNull()
-    .references(() => dishes.id),
+    tuesdayDish1: integer("tuesday_dish_1_id")
+      .notNull()
+      .references(() => dishes.id),
+    tuesdayDish2: integer("tuesday_dish_2_id")
+      .notNull()
+      .references(() => dishes.id),
 
-  wednesdayDish1: integer("wednesday_dish_1_id")
-    .notNull()
-    .references(() => dishes.id),
-  wednesdayDish2: integer("wednesday_dish_2_id")
-    .notNull()
-    .references(() => dishes.id),
+    wednesdayDish1: integer("wednesday_dish_1_id")
+      .notNull()
+      .references(() => dishes.id),
+    wednesdayDish2: integer("wednesday_dish_2_id")
+      .notNull()
+      .references(() => dishes.id),
 
-  thursdayDish1: integer("thursday_dish_1_id")
-    .notNull()
-    .references(() => dishes.id),
-  thursdayDish2: integer("thursday_dish_2_id")
-    .notNull()
-    .references(() => dishes.id),
+    thursdayDish1: integer("thursday_dish_1_id")
+      .notNull()
+      .references(() => dishes.id),
+    thursdayDish2: integer("thursday_dish_2_id")
+      .notNull()
+      .references(() => dishes.id),
 
-  fridayDish1: integer("friday_dish_1_id")
-    .notNull()
-    .references(() => dishes.id),
-  fridayDish2: integer("friday_dish_2_id")
-    .notNull()
-    .references(() => dishes.id),
-});
+    fridayDish1: integer("friday_dish_1_id")
+      .notNull()
+      .references(() => dishes.id),
+    fridayDish2: integer("friday_dish_2_id")
+      .notNull()
+      .references(() => dishes.id),
+  },
+  (table) => ({
+    weekIndex: index("week_idx").on(table.from),
+  }),
+);
+
+// User's choice for a week
+export const userMenus = createTable(
+  "user_tables",
+  {
+    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    userId: varchar("user_id", { length: 255 }).notNull(),
+
+    monday: integer("monday_dish_id").references(() => dishes.id),
+    tuesday: integer("tuesday_dish_id").references(() => dishes.id),
+    wednesday: integer("wednesday_dish_id").references(() => dishes.id),
+    thursday: integer("thursday_dish_id").references(() => dishes.id),
+    friday: integer("friday_dish_id").references(() => dishes.id),
+  },
+  (table) => ({
+    userIdIndex: index("user_id_idx").on(table.userId),
+  }),
+);

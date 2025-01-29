@@ -20,7 +20,13 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@supabase/ssr": "^0.5.2",
+=======
+    "@heroui/card": "^2.2.10",
+    "@heroui/image": "^2.2.6",
+    "@heroui/react": "^2.6.14",
+>>>>>>> main
     "@supabase/supabase-js": "^2.48.1",
     "@t3-oss/env-nextjs": "^0.10.1",
     "drizzle-orm": "^0.39.0",

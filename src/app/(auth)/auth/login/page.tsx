@@ -9,7 +9,7 @@ export default function Login() {
     return (
         <>
             <div className="w-screen h-screen bg-white flex justify-center items-center">
-                <div className="w-[30%] border-2 transition-all rounded-xl flex justify-start items-center p-5 flex-col gap-4">
+                <div className="w-[80%] sm:w-[40%] md:w-[40%] border-2 transition-all rounded-xl flex justify-start items-center p-5 flex-col gap-4">
                     <h1 className="text-md text-gray-700">Přihlášení pro studenty</h1>
                     <button className="w-full h-16 p-3 rounded-lg bg-gray-100 flex justify-start items-center gap-3 cursor-pointer ring-gray-300 hover:ring-2">
                         <div className="flex justify-center items-center h-12 w-12 bg-white rounded-lg p-3">

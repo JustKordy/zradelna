@@ -1,7 +1,7 @@
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   date,
   index,
@@ -37,47 +37,41 @@ export const dishes = createTable(
   }),
 );
 
+export const dishRelations = relations(dishes, ({ many }) => ({
+  mondayOption1Menus: many(menus, { relationName: "monday_option1" }),
+  mondayOption2Menus: many(menus, { relationName: "monday_option2" }),
+  tuesdayOption1Menus: many(menus, { relationName: "tuesday_option1" }),
+  tuesdayOption2Menus: many(menus, { relationName: "tuesday_option2" }),
+  wednesdayOption1Menus: many(menus, { relationName: "wednesday_option1" }),
+  wednesdayOption2Menus: many(menus, { relationName: "wednesday_option2" }),
+  thursdayOption1Menus: many(menus, { relationName: "thursday_option1" }),
+  thursdayOption2Menus: many(menus, { relationName: "thursday_option2" }),
+  fridayOption1Menus: many(menus, { relationName: "friday_option1" }),
+  fridayOption2Menus: many(menus, { relationName: "friday_option2" }),
+}));
+
 // Menu for a week
 export const menus = createTable(
   "menus",
   {
-    id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-    from: date("from", { mode: "date" }).notNull(), // Should always be Monday
+    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    fromDate: date("from_date").notNull(),
 
-    mondayDish1: integer("monday_dish_1_id")
-      .notNull()
-      .references(() => dishes.id),
-    mondayDish2: integer("monday_dish_2_id")
-      .notNull()
-      .references(() => dishes.id),
-
-    tuesdayDish1: integer("tuesday_dish_1_id")
-      .notNull()
-      .references(() => dishes.id),
-    tuesdayDish2: integer("tuesday_dish_2_id")
-      .notNull()
-      .references(() => dishes.id),
-
-    wednesdayDish1: integer("wednesday_dish_1_id")
-      .notNull()
-      .references(() => dishes.id),
-    wednesdayDish2: integer("wednesday_dish_2_id")
-      .notNull()
-      .references(() => dishes.id),
-
-    thursdayDish1: integer("thursday_dish_1_id")
-      .notNull()
-      .references(() => dishes.id),
-    thursdayDish2: integer("thursday_dish_2_id")
-      .notNull()
-      .references(() => dishes.id),
-
-    fridayDish1: integer("friday_dish_1_id")
-      .notNull()
-      .references(() => dishes.id),
-    fridayDish2: integer("friday_dish_2_id")
-      .notNull()
-      .references(() => dishes.id),
+    // Monday options
+    mondayOption1Id: integer("monday_option1_id").notNull(),
+    mondayOption2Id: integer("monday_option2_id").notNull(),
+    // Tuesday options
+    tuesdayOption1Id: integer("tuesday_option1_id").notNull(),
+    tuesdayOption2Id: integer("tuesday_option2_id").notNull(),
+    // Wednesday options
+    wednesdayOption1Id: integer("wednesday_option1_id").notNull(),
+    wednesdayOption2Id: integer("wednesday_option2_id").notNull(),
+    // Thursday options
+    thursdayOption1Id: integer("thursday_option1_id").notNull(),
+    thursdayOption2Id: integer("thursday_option2_id").notNull(),
+    // Friday options
+    fridayOption1Id: integer("friday_option1_id").notNull(),
+    fridayOption2Id: integer("friday_option2_id").notNull(),
 
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
@@ -85,13 +79,67 @@ export const menus = createTable(
     updatedAt: timestamp("updated_at").$onUpdate(() => new Date()),
   },
   (table) => ({
-    weekIndex: index("week_idx").on(table.from),
+    fromDateIndex: index("from_date_idx").on(table.fromDate),
   }),
 );
 
+export const menuRelations = relations(menus, ({ one }) => ({
+  mondayOption1: one(dishes, {
+    // {{{
+    fields: [menus.mondayOption1Id],
+    references: [dishes.id],
+    relationName: "monday_option1",
+  }),
+  mondayOption2: one(dishes, {
+    fields: [menus.mondayOption2Id],
+    references: [dishes.id],
+    relationName: "monday_option2",
+  }),
+  tuesdayOption1: one(dishes, {
+    fields: [menus.tuesdayOption1Id],
+    references: [dishes.id],
+    relationName: "tuesday_option1",
+  }),
+  tuesdayOption2: one(dishes, {
+    fields: [menus.tuesdayOption2Id],
+    references: [dishes.id],
+    relationName: "tuesday_option2",
+  }),
+  wednesdayOption1: one(dishes, {
+    fields: [menus.wednesdayOption1Id],
+    references: [dishes.id],
+    relationName: "wednesday_option1",
+  }),
+  wednesdayOption2: one(dishes, {
+    fields: [menus.wednesdayOption2Id],
+    references: [dishes.id],
+    relationName: "wednesday_option2",
+  }),
+  thursdayOption1: one(dishes, {
+    fields: [menus.thursdayOption1Id],
+    references: [dishes.id],
+    relationName: "thursday_option1",
+  }),
+  thursdayOption2: one(dishes, {
+    fields: [menus.thursdayOption2Id],
+    references: [dishes.id],
+    relationName: "thursday_option2",
+  }),
+  fridayOption1: one(dishes, {
+    fields: [menus.fridayOption1Id],
+    references: [dishes.id],
+    relationName: "friday_option1",
+  }),
+  fridayOption2: one(dishes, {
+    fields: [menus.fridayOption2Id],
+    references: [dishes.id],
+    relationName: "friday_option2",
+  }), // }}}
+}));
+
 // User's choice for a week
 export const userMenus = createTable(
-  "user_tables",
+  "user_menus",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     userId: varchar("user_id", { length: 255 }).notNull(),

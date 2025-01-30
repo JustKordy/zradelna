@@ -1,5 +1,5 @@
 {
-  "id": "f15b6bd9-9636-4513-8016-831f446c7bb9",
+  "id": "74773568-c4be-4d2f-a510-0f1932e7d01f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -91,7 +91,7 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
+            "type": "byDefault",
             "name": "zradelna_menus_id_seq",
             "schema": "public",
             "increment": "1",
@@ -102,79 +102,92 @@
             "cycle": false
           }
         },
-        "from": {
-          "name": "from",
+        "from_date": {
+          "name": "from_date",
           "type": "date",
           "primaryKey": false,
           "notNull": true
         },
-        "monday_dish_1_id": {
-          "name": "monday_dish_1_id",
+        "monday_option1_id": {
+          "name": "monday_option1_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "monday_dish_2_id": {
-          "name": "monday_dish_2_id",
+        "monday_option2_id": {
+          "name": "monday_option2_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "tuesday_dish_1_id": {
-          "name": "tuesday_dish_1_id",
+        "tuesday_option1_id": {
+          "name": "tuesday_option1_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "tuesday_dish_2_id": {
-          "name": "tuesday_dish_2_id",
+        "tuesday_option2_id": {
+          "name": "tuesday_option2_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "wednesday_dish_1_id": {
-          "name": "wednesday_dish_1_id",
+        "wednesday_option1_id": {
+          "name": "wednesday_option1_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "wednesday_dish_2_id": {
-          "name": "wednesday_dish_2_id",
+        "wednesday_option2_id": {
+          "name": "wednesday_option2_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "thursday_dish_1_id": {
-          "name": "thursday_dish_1_id",
+        "thursday_option1_id": {
+          "name": "thursday_option1_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "thursday_dish_2_id": {
-          "name": "thursday_dish_2_id",
+        "thursday_option2_id": {
+          "name": "thursday_option2_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "friday_dish_1_id": {
-          "name": "friday_dish_1_id",
+        "friday_option1_id": {
+          "name": "friday_option1_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "friday_dish_2_id": {
-          "name": "friday_dish_2_id",
+        "friday_option2_id": {
+          "name": "friday_option2_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {
-        "week_idx": {
-          "name": "week_idx",
+        "from_date_idx": {
+          "name": "from_date_idx",
           "columns": [
             {
-              "expression": "from",
+              "expression": "from_date",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -186,146 +199,15 @@
           "with": {}
         }
       },
-      "foreignKeys": {
-        "zradelna_menus_monday_dish_1_id_zradelna_dishes_id_fk": {
-          "name": "zradelna_menus_monday_dish_1_id_zradelna_dishes_id_fk",
-          "tableFrom": "zradelna_menus",
-          "tableTo": "zradelna_dishes",
-          "columnsFrom": [
-            "monday_dish_1_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "zradelna_menus_monday_dish_2_id_zradelna_dishes_id_fk": {
-          "name": "zradelna_menus_monday_dish_2_id_zradelna_dishes_id_fk",
-          "tableFrom": "zradelna_menus",
-          "tableTo": "zradelna_dishes",
-          "columnsFrom": [
-            "monday_dish_2_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "zradelna_menus_tuesday_dish_1_id_zradelna_dishes_id_fk": {
-          "name": "zradelna_menus_tuesday_dish_1_id_zradelna_dishes_id_fk",
-          "tableFrom": "zradelna_menus",
-          "tableTo": "zradelna_dishes",
-          "columnsFrom": [
-            "tuesday_dish_1_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "zradelna_menus_tuesday_dish_2_id_zradelna_dishes_id_fk": {
-          "name": "zradelna_menus_tuesday_dish_2_id_zradelna_dishes_id_fk",
-          "tableFrom": "zradelna_menus",
-          "tableTo": "zradelna_dishes",
-          "columnsFrom": [
-            "tuesday_dish_2_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "zradelna_menus_wednesday_dish_1_id_zradelna_dishes_id_fk": {
-          "name": "zradelna_menus_wednesday_dish_1_id_zradelna_dishes_id_fk",
-          "tableFrom": "zradelna_menus",
-          "tableTo": "zradelna_dishes",
-          "columnsFrom": [
-            "wednesday_dish_1_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "zradelna_menus_wednesday_dish_2_id_zradelna_dishes_id_fk": {
-          "name": "zradelna_menus_wednesday_dish_2_id_zradelna_dishes_id_fk",
-          "tableFrom": "zradelna_menus",
-          "tableTo": "zradelna_dishes",
-          "columnsFrom": [
-            "wednesday_dish_2_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "zradelna_menus_thursday_dish_1_id_zradelna_dishes_id_fk": {
-          "name": "zradelna_menus_thursday_dish_1_id_zradelna_dishes_id_fk",
-          "tableFrom": "zradelna_menus",
-          "tableTo": "zradelna_dishes",
-          "columnsFrom": [
-            "thursday_dish_1_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "zradelna_menus_thursday_dish_2_id_zradelna_dishes_id_fk": {
-          "name": "zradelna_menus_thursday_dish_2_id_zradelna_dishes_id_fk",
-          "tableFrom": "zradelna_menus",
-          "tableTo": "zradelna_dishes",
-          "columnsFrom": [
-            "thursday_dish_2_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "zradelna_menus_friday_dish_1_id_zradelna_dishes_id_fk": {
-          "name": "zradelna_menus_friday_dish_1_id_zradelna_dishes_id_fk",
-          "tableFrom": "zradelna_menus",
-          "tableTo": "zradelna_dishes",
-          "columnsFrom": [
-            "friday_dish_1_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "zradelna_menus_friday_dish_2_id_zradelna_dishes_id_fk": {
-          "name": "zradelna_menus_friday_dish_2_id_zradelna_dishes_id_fk",
-          "tableFrom": "zradelna_menus",
-          "tableTo": "zradelna_dishes",
-          "columnsFrom": [
-            "friday_dish_2_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.zradelna_user_tables": {
-      "name": "zradelna_user_tables",
+    "public.zradelna_user_menus": {
+      "name": "zradelna_user_menus",
       "schema": "",
       "columns": {
         "id": {
@@ -335,7 +217,7 @@
           "notNull": true,
           "identity": {
             "type": "byDefault",
-            "name": "zradelna_user_tables_id_seq",
+            "name": "zradelna_user_menus_id_seq",
             "schema": "public",
             "increment": "1",
             "startWith": "1",
@@ -380,6 +262,19 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {
@@ -400,9 +295,9 @@
         }
       },
       "foreignKeys": {
-        "zradelna_user_tables_monday_dish_id_zradelna_dishes_id_fk": {
-          "name": "zradelna_user_tables_monday_dish_id_zradelna_dishes_id_fk",
-          "tableFrom": "zradelna_user_tables",
+        "zradelna_user_menus_monday_dish_id_zradelna_dishes_id_fk": {
+          "name": "zradelna_user_menus_monday_dish_id_zradelna_dishes_id_fk",
+          "tableFrom": "zradelna_user_menus",
           "tableTo": "zradelna_dishes",
           "columnsFrom": [
             "monday_dish_id"
@@ -413,9 +308,9 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "zradelna_user_tables_tuesday_dish_id_zradelna_dishes_id_fk": {
-          "name": "zradelna_user_tables_tuesday_dish_id_zradelna_dishes_id_fk",
-          "tableFrom": "zradelna_user_tables",
+        "zradelna_user_menus_tuesday_dish_id_zradelna_dishes_id_fk": {
+          "name": "zradelna_user_menus_tuesday_dish_id_zradelna_dishes_id_fk",
+          "tableFrom": "zradelna_user_menus",
           "tableTo": "zradelna_dishes",
           "columnsFrom": [
             "tuesday_dish_id"
@@ -426,9 +321,9 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "zradelna_user_tables_wednesday_dish_id_zradelna_dishes_id_fk": {
-          "name": "zradelna_user_tables_wednesday_dish_id_zradelna_dishes_id_fk",
-          "tableFrom": "zradelna_user_tables",
+        "zradelna_user_menus_wednesday_dish_id_zradelna_dishes_id_fk": {
+          "name": "zradelna_user_menus_wednesday_dish_id_zradelna_dishes_id_fk",
+          "tableFrom": "zradelna_user_menus",
           "tableTo": "zradelna_dishes",
           "columnsFrom": [
             "wednesday_dish_id"
@@ -439,9 +334,9 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "zradelna_user_tables_thursday_dish_id_zradelna_dishes_id_fk": {
-          "name": "zradelna_user_tables_thursday_dish_id_zradelna_dishes_id_fk",
-          "tableFrom": "zradelna_user_tables",
+        "zradelna_user_menus_thursday_dish_id_zradelna_dishes_id_fk": {
+          "name": "zradelna_user_menus_thursday_dish_id_zradelna_dishes_id_fk",
+          "tableFrom": "zradelna_user_menus",
           "tableTo": "zradelna_dishes",
           "columnsFrom": [
             "thursday_dish_id"
@@ -452,9 +347,9 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "zradelna_user_tables_friday_dish_id_zradelna_dishes_id_fk": {
-          "name": "zradelna_user_tables_friday_dish_id_zradelna_dishes_id_fk",
-          "tableFrom": "zradelna_user_tables",
+        "zradelna_user_menus_friday_dish_id_zradelna_dishes_id_fk": {
+          "name": "zradelna_user_menus_friday_dish_id_zradelna_dishes_id_fk",
+          "tableFrom": "zradelna_user_menus",
           "tableTo": "zradelna_dishes",
           "columnsFrom": [
             "friday_dish_id"

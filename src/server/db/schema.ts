@@ -78,6 +78,11 @@ export const menus = createTable(
     fridayDish2: integer("friday_dish_2_id")
       .notNull()
       .references(() => dishes.id),
+
+    createdAt: timestamp("created_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at").$onUpdate(() => new Date()),
   },
   (table) => ({
     weekIndex: index("week_idx").on(table.from),
@@ -96,6 +101,11 @@ export const userMenus = createTable(
     wednesday: integer("wednesday_dish_id").references(() => dishes.id),
     thursday: integer("thursday_dish_id").references(() => dishes.id),
     friday: integer("friday_dish_id").references(() => dishes.id),
+
+    createdAt: timestamp("created_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at").$onUpdate(() => new Date()),
   },
   (table) => ({
     userIdIndex: index("user_id_idx").on(table.userId),

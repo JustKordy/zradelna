@@ -1,4 +1,8 @@
 export default function Home() {
-  return null;
+  return (
+    <main>
+      <h1>Root</h1>
+    </main>
+  );
 }
 

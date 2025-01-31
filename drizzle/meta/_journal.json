@@ -8,6 +8,13 @@
       "when": 1738227187929,
       "tag": "0000_sparkling_weapon_omega",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1738329203915,
+      "tag": "0001_nappy_outlaw_kid",
+      "breakpoints": true
     }
   ]
 }

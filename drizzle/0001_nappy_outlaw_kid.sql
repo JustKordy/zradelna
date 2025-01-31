@@ -1,0 +1,3 @@
+ALTER TABLE "zradelna_user_menus" ADD COLUMN "menu_id" integer NOT NULL;--> statement-breakpoint
+ALTER TABLE "zradelna_user_menus" ADD CONSTRAINT "zradelna_user_menus_menu_id_zradelna_menus_id_fk" FOREIGN KEY ("menu_id") REFERENCES "public"."zradelna_menus"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "menu_id_idx" ON "zradelna_user_menus" USING btree ("menu_id");

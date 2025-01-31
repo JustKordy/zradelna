@@ -32,9 +32,7 @@ export const dishes = createTable(
       .notNull(),
     updatedAt: timestamp("updated_at").$onUpdate(() => new Date()),
   },
-  (table) => ({
-    nameIndex: index("name_idx").on(table.name),
-  }),
+  (table) => [index("name_idx").on(table.name)],
 );
 
 export const dishRelations = relations(dishes, ({ many }) => ({
@@ -78,12 +76,11 @@ export const menus = createTable(
       .notNull(),
     updatedAt: timestamp("updated_at").$onUpdate(() => new Date()),
   },
-  (table) => ({
-    fromDateIndex: index("from_date_idx").on(table.fromDate),
-  }),
+  (table) => [index("from_date_idx").on(table.fromDate)],
 );
 
-export const menuRelations = relations(menus, ({ one }) => ({
+export const menuRelations = relations(menus, ({ one, many }) => ({
+  userMenus: many(userMenus),
   mondayOption1: one(dishes, {
     // {{{
     fields: [menus.mondayOption1Id],
@@ -143,6 +140,9 @@ export const userMenus = createTable(
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     userId: varchar("user_id", { length: 255 }).notNull(),
+    menuId: integer("menu_id")
+      .references(() => menus.id)
+      .notNull(),
 
     monday: integer("monday_dish_id").references(() => dishes.id),
     tuesday: integer("tuesday_dish_id").references(() => dishes.id),
@@ -155,7 +155,36 @@ export const userMenus = createTable(
       .notNull(),
     updatedAt: timestamp("updated_at").$onUpdate(() => new Date()),
   },
-  (table) => ({
-    userIdIndex: index("user_id_idx").on(table.userId),
-  }),
+  (table) => [
+    index("user_id_idx").on(table.userId),
+    index("menu_id_idx").on(table.menuId),
+  ],
 );
+
+export const userMenuRelations = relations(userMenus, ({ one }) => ({
+  menu: one(menus, {
+    // {{{
+    fields: [userMenus.menuId],
+    references: [menus.id],
+  }),
+  mondayDish: one(dishes, {
+    fields: [userMenus.monday],
+    references: [dishes.id],
+  }),
+  tuesdayDish: one(dishes, {
+    fields: [userMenus.tuesday],
+    references: [dishes.id],
+  }),
+  wednesdayDish: one(dishes, {
+    fields: [userMenus.wednesday],
+    references: [dishes.id],
+  }),
+  thursdayDish: one(dishes, {
+    fields: [userMenus.thursday],
+    references: [dishes.id],
+  }),
+  fridayDish: one(dishes, {
+    fields: [userMenus.friday],
+    references: [dishes.id],
+  }),
+})); // }}}

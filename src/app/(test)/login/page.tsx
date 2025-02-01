@@ -1,5 +1,5 @@
 import { getUser } from "~/server/queries/user";
-import { login, signup } from "./actions";
+import { login } from "./actions";
 import { redirect } from "next/navigation";
 
 export default async function LoginPage() {
@@ -21,9 +21,6 @@ export default async function LoginPage() {
       <div>
         <button className="border p-3" formAction={login}>
           Log in
-        </button>
-        <button className="border p-3" formAction={signup}>
-          Sign up
         </button>
       </div>
     </form>

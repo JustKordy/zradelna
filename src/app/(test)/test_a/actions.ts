@@ -1,18 +1,14 @@
 "use server";
 
 import { getLastMonday } from "~/lib/utils/days";
-import { createMenu, getMenu, type WeekOptions } from "~/server/queries/menus";
+import { userChoice } from "~/server/queries/user";
+import { MenuChoiceWeek } from "~/types/menuChoices";
 
 export async function lala() {
   console.log("LALA");
-  const options: WeekOptions = [
-    [1, 1],
-    [1, 1],
-    [1, 6],
-    [1, 1],
-    [1, 1],
-  ];
+  const options: MenuChoiceWeek = [1, 1, null, null, 2];
   // const data = await createMenu(getLastMonday(), options);
-  const data = await getMenu();
+  // const data = await getMenu();
+  const data = await userChoice(getLastMonday(), options);
   console.log(data);
 }

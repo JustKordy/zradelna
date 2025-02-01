@@ -6,6 +6,7 @@ import { type MenuChoiceWeek } from "~/types/menuChoices";
 import { db } from "../db";
 import { userMenus } from "../db/schema";
 import { type Week, days } from "~/types/date";
+import { env } from "~/env";
 
 /// AUTH
 
@@ -43,7 +44,7 @@ export async function LogInWithAzure() {
     provider: "azure",
     options: {
       scopes: "email",
-      redirectTo: "http://localhost:3000/auth/callback",
+      redirectTo: `http://${env.DOMAIN}/auth/callback`,
     },
   });
 

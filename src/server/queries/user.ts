@@ -7,6 +7,8 @@ import { db } from "../db";
 import { userMenus } from "../db/schema";
 import { type Week, days } from "~/types/date";
 
+/// AUTH
+
 export async function getUser() {
   const supabase = await createClient();
   const {
@@ -30,7 +32,30 @@ export async function signOut() {
     redirect("/error");
   }
 
-  console.log("[INFO][AUTH]: Successfully sign user out");
+  console.log("[INFO][AUTH]: Successfully signed user out");
+  // Maybe this should redirect to `/app` or something
+  redirect("/");
+}
+
+export async function LogInWithAzure() {
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "azure",
+    options: {
+      scopes: "email",
+      redirectTo: "http://localhost:3000/auth/callback",
+    },
+  });
+
+  if (error) {
+    console.error("[ERROR][AUTH][AZURE]: Failed to sign user in: ", error);
+    redirect("/error");
+  }
+
+  if (data.url) {
+    console.log("[INFO][AUTH]: Redirection user to Azure OAuth: ", data.url);
+    redirect(data.url);
+  }
 }
 
 // MENU

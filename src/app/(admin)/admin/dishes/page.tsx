@@ -1,32 +1,19 @@
-
-
 export default function Dishes() {
-
-
-    return (
-
-        // prozatimni navrh na vzhled teto stranky
-        <>
-
-        
-            <div className="w-screen h-screen flex justify-center items-center flex-row gap-5">
-                <div className="w-[40%] h-[80%] border-2 overflow-auto p-4 rounded-lg ">
-                    <div className="w-full h-32 rounded-lg border-2 mb-3 flex items-center justify-between px-4">
-                        
-
-                    </div>
-                    <div className="w-full h-32 rounded-lg border-2 mb-3"></div>
-                    <div className="w-full h-32 rounded-lg border-2 mb-3"></div>
-                    <div className="w-full h-32 rounded-lg border-2 mb-3"></div>
-                    <div className="w-full h-32 rounded-lg border-2 mb-3"></div>
-                    <div className="w-full h-32 rounded-lg border-2 mb-3"></div>
-                    <div className="w-full h-32 rounded-lg border-2 mb-3"></div>
-                </div>
-                <div className="w-[40%] h-[80%] border-2 rounded-lg">
-
-                </div>
-            </div>
-        </>
-    )
-
+  return (
+    // prozatimni navrh na vzhled teto stranky
+    <>
+      <div className="flex h-screen w-screen flex-row items-center justify-center gap-5">
+        <div className="h-[80%] w-[40%] overflow-auto rounded-lg border-2 p-4">
+          <div className="mb-3 flex h-32 w-full items-center justify-between rounded-lg border-2 px-4"></div>
+          <div className="mb-3 h-32 w-full rounded-lg border-2"></div>
+          <div className="mb-3 h-32 w-full rounded-lg border-2"></div>
+          <div className="mb-3 h-32 w-full rounded-lg border-2"></div>
+          <div className="mb-3 h-32 w-full rounded-lg border-2"></div>
+          <div className="mb-3 h-32 w-full rounded-lg border-2"></div>
+          <div className="mb-3 h-32 w-full rounded-lg border-2"></div>
+        </div>
+        <div className="h-[80%] w-[40%] rounded-lg border-2"></div>
+      </div>
+    </>
+  );
 }

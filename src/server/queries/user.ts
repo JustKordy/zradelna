@@ -43,7 +43,8 @@ export async function LogInWithAzure() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "azure",
     options: {
-      scopes: "email",
+      // We need profile to get user's name. (openid is some bs ms requires)
+      scopes: "openid profile email",
       redirectTo: `http://${env.DOMAIN}/auth/callback`,
     },
   });

@@ -5,3 +5,4 @@
 [ ] 404 Page
 [x] Microsoft OAuth
 [x] Get user's name on Sign Up
+[x] Auth should work for both schools (no works only for SPŠE)

@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 import { createClient } from "~/lib/supabase/server";
+import jwt from "jsonwebtoken";
+
+const ALLOWED_TENANTS: string[] = [
+  "534a8069-2967-42a0-a777-f1e42d3ba506", // SPŠE
+  "b1f38af7-a52e-4e96-bcf2-9a272fadb88", // SOA
+] as const;
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -9,8 +15,19 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await createClient();
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+
+    if (!error && data.session) {
+      // Check the tenant ID
+      const providerToken = data.session.provider_token;
+      if (!providerToken) throw new Error("Failed to get provider token");
+      // Parse the JWT
+      const tenantID = extractTenantID(providerToken);
+      if (!tenantID) throw new Error("Tenant ID isn't present");
+      // Check if the tenantID is allowed
+      if (!ALLOWED_TENANTS.includes(tenantID))
+        throw new Error("Wrong tenantID");
+
       const forwardedHost = request.headers.get("x-forwarded-host"); // original origin before load balancer
       const isLocalEnv = process.env.NODE_ENV === "development";
       if (isLocalEnv) {
@@ -26,4 +43,9 @@ export async function GET(request: Request) {
 
   // return the user to an error page with instructions
   return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+}
+
+function extractTenantID(rawToken: string): string | undefined {
+  const token = jwt.decode(rawToken) as { tid?: string } | null;
+  return token?.tid;
 }

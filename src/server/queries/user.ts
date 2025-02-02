@@ -61,14 +61,14 @@ export async function LogInWithAzure() {
 }
 
 // MENU
-export async function userChoice(menuId: number, choices: MenuChoiceWeek) {
+export async function makeUserChoice(menuId: number, choices: MenuChoiceWeek) {
   // Get user id
   const supabase = await createClient();
   const {
     data: { user },
     error,
   } = await supabase.auth.getUser();
-  if (error || !user) throw new Error("unauthorized");
+  if (error || !user) throw new Error("Unauthorized");
 
   // Create choices
   const week: Week = {};

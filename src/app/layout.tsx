@@ -9,7 +9,8 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-const mt = Montserrat();
+// Latin-ext is needed for Czech (e.g. Č, ř, Ž)
+const mt = Montserrat({ subsets: ["latin", "latin-ext"] });
 
 export default function RootLayout({
   children,

@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "~/lib/supabase/server";
+import { LogInWithAzure } from "~/server/queries/user";
 
 // ADD FORM VALIDATION
 
@@ -21,16 +22,6 @@ export async function login(formData: FormData) {
 
 // ADD FORM VALIDATION
 
-export async function signup(formData: FormData) {
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.signUp({
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
-  });
-
-  console.log("[AUTH]: New user ", data.user?.id);
-  console.log("[AUTH][ERROR]: ", error);
-
-  if (error) redirect("/error");
-  redirect("/");
+export async function signInWithMicrosoft() {
+  await LogInWithAzure();
 }

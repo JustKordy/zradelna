@@ -7,3 +7,4 @@
 - [x] Get the user's name on Sign Up
 - [x] Auth should work for both schools
 - [ ] Supabase security
+- [ ] CI

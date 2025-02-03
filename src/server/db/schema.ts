@@ -45,6 +45,10 @@ export const menus = createTable(
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     date: date("date", { mode: "date" }).notNull(),
+    soupId: integer("soup_id")
+      .references(() => dishes.id)
+      .notNull(),
+
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -70,13 +74,18 @@ export const menuDishes = createTable(
   (table) => [primaryKey({ columns: [table.menuId, table.dishId] })],
 );
 
-export const menusR = relations(menus, ({ many }) => ({
+export const menusR = relations(menus, ({ many, one }) => ({
   menusToDIshes: many(menuDishes),
   userChoices: many(userChoices),
+  soup: one(dishes, {
+    fields: [menus.soupId],
+    references: [dishes.id],
+  }),
 }));
 export const dishesR = relations(dishes, ({ many }) => ({
   dishesToMenus: many(menuDishes),
   userChoices: many(userChoices),
+  soups: many(dishes),
 }));
 export const menuDishesR = relations(menuDishes, ({ one }) => ({
   menu: one(menus, {

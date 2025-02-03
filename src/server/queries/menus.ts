@@ -8,7 +8,8 @@ export async function getMenu(date: Date) {
   return db.query.menus.findFirst({
     where: eq(menus.date, date),
     with: {
-      menusToDIshes: {
+      soup: true,
+      menusToDishes: {
         with: {
           dishes: true,
         },

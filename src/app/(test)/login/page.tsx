@@ -12,7 +12,7 @@ export default async function LoginPage() {
     <main className="flex flex-col gap-6 bg-zinc-300 p-6">
       <form className="flex w-[30%] flex-col gap-2">
         <div>
-          <label htmlFor="email">Email:</label>
+          <label htmlFor="email">Email:</label> 
           <input id="email" name="email" type="email" required />
         </div>
         <div>

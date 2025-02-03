@@ -127,7 +127,7 @@ export const userChoices = createTable(
 
 export const userChoiceR = relations(userChoices, ({ one }) => ({
   dish: one(dishes, {
-    fields: [userChoices.dish_id],
+    fields: [userChoices.dishId],
     references: [dishes.id],
   }),
   menu: one(menus, {

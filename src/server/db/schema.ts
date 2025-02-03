@@ -107,7 +107,7 @@ export const userChoices = createTable(
     menuId: integer("menu_id")
       .references(() => menus.id)
       .notNull(),
-    dish_id: integer("dish_id")
+    dishId: integer("dish_id")
       .references(() => dishes.id)
       .notNull(),
 

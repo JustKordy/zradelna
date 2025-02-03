@@ -27,7 +27,7 @@ export const dishes = createTable(
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     name: varchar("name", { length: 255 }).notNull(),
     description: text("description"),
-    imgURL: varchar("img_url", { length: 512 }),
+    imgURL: varchar("img_url", { length: 1024 }),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),

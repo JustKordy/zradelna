@@ -3,6 +3,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "~/lib/supabase/server";
 import { env } from "~/env";
+import { db } from "../db";
+import { userChoices } from "../db/schema";
 
 /// AUTH
 
@@ -54,4 +56,16 @@ export async function LogInWithAzure() {
     console.log("[INFO][AUTH]: Redirection user to Azure OAuth: ", data.url);
     redirect(data.url);
   }
+}
+
+// Menu
+export async function makeUserChoice(menuId: number, dishId: number) {
+  const user = await getUser();
+  if (!user) throw new Error("Unauthorized");
+
+  return db.insert(userChoices).values({
+    userId: user.id,
+    menuId,
+    dishId,
+  });
 }

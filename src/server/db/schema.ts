@@ -37,7 +37,7 @@ export const dishes = createTable(
       .$onUpdate(() => new Date()),
   },
   (table) => [index("name_idx").on(table.name)],
-);
+).enableRLS();
 
 // Menu for a day
 export const menus = createTable(
@@ -58,7 +58,7 @@ export const menus = createTable(
       .$onUpdate(() => new Date()),
   },
   (table) => [index("date_idx").on(table.date)],
-);
+).enableRLS();
 
 // Define the join table for menus and dishes
 export const menuDishes = createTable(
@@ -72,7 +72,7 @@ export const menuDishes = createTable(
       .references(() => dishes.id),
   },
   (table) => [primaryKey({ columns: [table.menuId, table.dishId] })],
-);
+).enableRLS();
 
 export const menusR = relations(menus, ({ many, one }) => ({
   menusToDishes: many(menuDishes),
@@ -123,7 +123,7 @@ export const userChoices = createTable(
     index("user_id_idx").on(table.userId),
     index("menu_id_idx").on(table.menuId),
   ],
-);
+).enableRLS();
 
 export const userChoiceR = relations(userChoices, ({ one }) => ({
   dish: one(dishes, {

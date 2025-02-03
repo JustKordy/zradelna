@@ -75,7 +75,7 @@ export const menuDishes = createTable(
 );
 
 export const menusR = relations(menus, ({ many, one }) => ({
-  menusToDIshes: many(menuDishes),
+  menusToDishes: many(menuDishes),
   userChoices: many(userChoices),
   soup: one(dishes, {
     fields: [menus.soupId],

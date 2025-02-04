@@ -4,7 +4,8 @@ import jwt from "jsonwebtoken";
 
 const ALLOWED_TENANTS: string[] = [
   "534a8069-2967-42a0-a777-f1e42d3ba506", // SPŠE
-  "b1f38af7-a52e-4e96-bcf2-9a272fadb88", // SOA
+  "b1f38af7-a52e-4e96-bcf2-9a272fadb888", // SOA
+  "f0d31621-d73b-4cf1-8188-27c60408b50c", // The real SOA
 ] as const;
 
 export async function GET(request: Request) {
@@ -25,6 +26,7 @@ export async function GET(request: Request) {
       const tenantID = extractTenantID(providerToken);
       if (!tenantID) throw new Error("Tenant ID isn't present");
       // Check if the tenantID is allowed
+      console.log("The fucking tenantID: ", tenantID);
       if (!ALLOWED_TENANTS.includes(tenantID))
         throw new Error("Wrong tenantID");
 

@@ -1,15 +1,18 @@
 "use server";
 
-import { getMenu } from "~/server/queries/menus";
-import { makeUserChoice } from "~/server/queries/user";
-import type { MenuChoiceWeek } from "~/types/menuChoices";
+import { addDish } from "~/server/queries/dish";
+import { addMenuItems, createMenu, getMenu } from "~/server/queries/menus";
 
 export async function lala() {
   console.log("LALA");
-  const options: MenuChoiceWeek = [1, 1, null, null, 2];
-  // const data = await createMenu(getLastMonday(), options);
-  const week = await getMenu();
-  if (!week) throw new Error(":(");
-  const data = await makeUserChoice(week.id, options);
-  console.log(data);
+  // const week = await getMenu(new Date());
+  // const data = await createMenu(new Date("2025-02-04"), 3);
+  // const data = await addMenuItems(3, [1, 2]);
+  const data = await addDish(
+    "Pizza",
+    "Italian circle",
+    "https://www.ocu.org/-/media/ocu/images/home/alimentacion/alimentos/pizzas_selector_1600x900.jpg?rev=6a81e278-07fc-4e95-9ba1-361063f35adf&hash=B8B1264AB6FC3F4B1AE140EB390208CD",
+  );
+
+  console.dir(data, { depth: Infinity });
 }

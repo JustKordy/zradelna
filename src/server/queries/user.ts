@@ -2,11 +2,9 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "~/lib/supabase/server";
-import { type MenuChoiceWeek } from "~/types/menuChoices";
-import { db } from "../db";
-import { userMenus } from "../db/schema";
-import { type Week, days } from "~/types/date";
 import { env } from "~/env";
+import { db } from "../db";
+import { userChoices } from "../db/schema";
 
 /// AUTH
 
@@ -64,28 +62,14 @@ export async function LogInWithAzure() {
   }
 }
 
-// MENU
-export async function makeUserChoice(menuId: number, choices: MenuChoiceWeek) {
-  // Get user id
-  const supabase = await createClient();
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
-  if (error || !user) throw new Error("Unauthorized");
+// Menu
+export async function makeUserChoice(menuId: number, dishId: number) {
+  const user = await getUser();
+  if (!user) throw new Error("Unauthorized");
 
-  // Create choices
-  const week: Week = {};
-  choices.forEach((choice, index) => {
-    if (choice !== null) {
-      week[days[index]!] = choice;
-    }
-  });
-
-  // Insert to the db
-  await db.insert(userMenus).values({
+  return db.insert(userChoices).values({
     userId: user.id,
     menuId,
-    ...week,
+    dishId,
   });
 }

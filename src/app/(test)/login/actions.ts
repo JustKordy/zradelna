@@ -14,9 +14,10 @@ export async function login(formData: FormData) {
   });
 
   console.log("[AUTH]: Login user ", data.user?.id);
-  console.log("[AUTH][ERROR]: ", error);
 
   if (error) redirect("/error");
+  console.log("[AUTH][ERROR]: ", error);
+
   redirect("/");
 }
 

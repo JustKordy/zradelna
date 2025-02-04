@@ -3,6 +3,7 @@
 
 import { relations, sql } from "drizzle-orm";
 import {
+  boolean,
   date,
   index,
   integer,
@@ -26,6 +27,7 @@ export const dishes = createTable(
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     name: varchar("name", { length: 255 }).notNull(),
+    isSoup: boolean("is_soup").default(false).notNull(),
     description: text("description"),
     imgURL: varchar("img_url", { length: 1024 }),
     createdAt: timestamp("created_at")

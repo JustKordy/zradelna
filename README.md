@@ -8,4 +8,5 @@
 - [x] Auth should work for both schools
 - [ ] Supabase security
 - [ ] Error boundary
+- [ ] CI
 - [ ] Sentry

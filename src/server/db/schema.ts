@@ -3,6 +3,7 @@
 
 import { relations, sql } from "drizzle-orm";
 import {
+  boolean,
   date,
   index,
   integer,
@@ -26,6 +27,7 @@ export const dishes = createTable(
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     name: varchar("name", { length: 255 }).notNull(),
+    isSoup: boolean("is_soup").default(false).notNull(),
     description: text("description"),
     imgURL: varchar("img_url", { length: 1024 }),
     createdAt: timestamp("created_at")
@@ -36,8 +38,11 @@ export const dishes = createTable(
       .notNull()
       .$onUpdate(() => new Date()),
   },
-  (table) => [index("name_idx").on(table.name)],
-).enableRLS();
+  (table) => [
+    index("name_idx").on(table.name),
+    index("is_soup_idx").on(table.isSoup),
+  ],
+);
 
 // Menu for a day
 export const menus = createTable(
@@ -72,7 +77,7 @@ export const menuDishes = createTable(
       .references(() => dishes.id),
   },
   (table) => [primaryKey({ columns: [table.menuId, table.dishId] })],
-).enableRLS();
+);
 
 export const menusR = relations(menus, ({ many, one }) => ({
   menusToDishes: many(menuDishes),
@@ -85,7 +90,7 @@ export const menusR = relations(menus, ({ many, one }) => ({
 export const dishesR = relations(dishes, ({ many }) => ({
   dishesToMenus: many(menuDishes),
   userChoices: many(userChoices),
-  soups: many(dishes),
+  soups: many(menus),
 }));
 export const menuDishesR = relations(menuDishes, ({ one }) => ({
   menu: one(menus, {
@@ -123,7 +128,7 @@ export const userChoices = createTable(
     index("user_id_idx").on(table.userId),
     index("menu_id_idx").on(table.menuId),
   ],
-).enableRLS();
+);
 
 export const userChoiceR = relations(userChoices, ({ one }) => ({
   dish: one(dishes, {

@@ -9,3 +9,5 @@
 - [ ] Supabase security
 - [ ] Error boundary
 - [ ] CI
+- [ ] Sentry
+

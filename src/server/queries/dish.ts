@@ -1,5 +1,6 @@
 "use server";
 
+import { and, eq, ilike } from "drizzle-orm";
 import { db } from "~/server/db";
 import { dishes } from "~/server/db/schema";
 
@@ -15,4 +16,14 @@ export async function addDish(
     description,
     imgURL,
   });
+}
+
+// GET
+// Finds dishes by name
+export async function findDish(query: string, soup = false) {
+  return db
+    .select()
+    .from(dishes)
+    .where(and(ilike(dishes.name, `%${query}%`), eq(dishes.isSoup, soup)))
+    .limit(50);
 }

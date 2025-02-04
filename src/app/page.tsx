@@ -1,7 +1,3 @@
-<<<<<<< Updated upstream
-export default function HomePage() {
-  return <div>AHoj</div>;
-=======
 import Link from "next/link";
 import { createClient } from "~/lib/supabase/server";
 
@@ -137,5 +133,3 @@ export default async function HomePage() {
       </aside>
     </div>
   );
->>>>>>> Stashed changes
-}

@@ -26,7 +26,6 @@ export async function GET(request: Request) {
       const tenantID = extractTenantID(providerToken);
       if (!tenantID) throw new Error("Tenant ID isn't present");
       // Check if the tenantID is allowed
-      console.log("The fucking tenantID: ", tenantID);
       if (!ALLOWED_TENANTS.includes(tenantID))
         throw new Error("Wrong tenantID");
 

@@ -20,6 +20,7 @@ import {
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
+
 export const createTable = pgTableCreator((name) => `zradelna_${name}`);
 
 export const dishes = createTable(

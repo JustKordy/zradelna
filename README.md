@@ -2,11 +2,13 @@
 
 ## To-Do
 
-- [ ] 404 Page
+- [x] 404 Page
 - [x] Microsoft OAuth
 - [x] Get the user's name on Sign Up
 - [x] Auth should work for both schools
 - [ ] Supabase security
-- [ ] Error boundary
+- [x] Error boundary
 - [x] CI
 - [ ] Sentry
+- [ ] Add style to error.tsx
+- [ ] Add style to not-found.tsx (404)

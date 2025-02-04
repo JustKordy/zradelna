@@ -44,10 +44,10 @@ export async function LogInWithAzure() {
       // We need profile to get user's name. (openid is some bs ms requires)
       scopes: "openid profile email",
       redirectTo: `http://${env.DOMAIN}/auth/callback`,
-      // queryParams:{
-      //   access_type: "offline",
-      //   prompt: "select_account"
-      // }
+       queryParams:{
+         access_type: "offline",
+         prompt: "select_account"
+       }
     },
   });
 

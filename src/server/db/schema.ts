@@ -38,7 +38,10 @@ export const dishes = createTable(
       .notNull()
       .$onUpdate(() => new Date()),
   },
-  (table) => [index("name_idx").on(table.name)],
+  (table) => [
+    index("name_idx").on(table.name),
+    index("is_soup_idx").on(table.isSoup),
+  ],
 );
 
 // Menu for a day

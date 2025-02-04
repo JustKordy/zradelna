@@ -63,7 +63,7 @@ export const menus = createTable(
       .$onUpdate(() => new Date()),
   },
   (table) => [index("date_idx").on(table.date)],
-);
+).enableRLS();
 
 // Define the join table for menus and dishes
 export const menuDishes = createTable(

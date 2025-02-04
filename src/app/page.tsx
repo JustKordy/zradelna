@@ -133,3 +133,4 @@ export default async function HomePage() {
       </aside>
     </div>
   );
+}

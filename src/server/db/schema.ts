@@ -85,7 +85,7 @@ export const menusR = relations(menus, ({ many, one }) => ({
 export const dishesR = relations(dishes, ({ many }) => ({
   dishesToMenus: many(menuDishes),
   userChoices: many(userChoices),
-  soups: many(dishes),
+  soups: many(menus),
 }));
 export const menuDishesR = relations(menuDishes, ({ one }) => ({
   menu: one(menus, {

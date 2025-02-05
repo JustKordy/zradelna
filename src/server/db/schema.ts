@@ -116,6 +116,7 @@ export const userChoices = createTable(
     dishId: integer("dish_id")
       .references(() => dishes.id)
       .notNull(),
+    toGo: boolean("to_go").default(false).notNull(),
 
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)

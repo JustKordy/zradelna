@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { createClient } from "~/lib/supabase/server";
+import { getUser } from "~/server/queries/user";
 
 export default async function HomePage() {
-  const supabase = await createClient();
-  const user = await supabase.auth.getUser();
+  const user = await getUser();
 
   const truncate = (text: string, length: number) => {
     if (text.length <= length) return text;
@@ -57,10 +56,10 @@ export default async function HomePage() {
             />
             <div className="flex flex-col">
               <span className="text-sm text-neutral-700">
-                {user?.data.user?.user_metadata.full_name}
+                {user?.user_metadata.full_name}
               </span>
               <span className="text-xs text-neutral-500">
-                {truncate(user?.data.user?.email ?? "", 20)}
+                {truncate(user?.email ?? "", 20)}
               </span>
             </div>
           </div>

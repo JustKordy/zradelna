@@ -7,7 +7,7 @@ import {
   date,
   index,
   integer,
-  pgTableCreator,
+  pgSchema,
   primaryKey,
   text,
   timestamp,
@@ -20,10 +20,9 @@ import {
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
+export const appSchema = pgSchema("app");
 
-export const createTable = pgTableCreator((name) => `zradelna_${name}`);
-
-export const dishes = createTable(
+export const dishes = appSchema.table(
   "dishes",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
@@ -46,28 +45,30 @@ export const dishes = createTable(
 );
 
 // Menu for a day
-export const menus = createTable(
-  "menus",
-  {
-    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    date: date("date", { mode: "date" }).notNull(),
-    soupId: integer("soup_id")
-      .references(() => dishes.id)
-      .notNull(),
+export const menus = appSchema
+  .table(
+    "menus",
+    {
+      id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+      date: date("date", { mode: "date" }).notNull(),
+      soupId: integer("soup_id")
+        .references(() => dishes.id)
+        .notNull(),
 
-    createdAt: timestamp("created_at")
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updated_at")
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull()
-      .$onUpdate(() => new Date()),
-  },
-  (table) => [index("date_idx").on(table.date)],
-).enableRLS();
+      createdAt: timestamp("created_at")
+        .default(sql`CURRENT_TIMESTAMP`)
+        .notNull(),
+      updatedAt: timestamp("updated_at")
+        .default(sql`CURRENT_TIMESTAMP`)
+        .notNull()
+        .$onUpdate(() => new Date()),
+    },
+    (table) => [index("date_idx").on(table.date)],
+  )
+  .enableRLS();
 
 // Define the join table for menus and dishes
-export const menuDishes = createTable(
+export const menuDishes = appSchema.table(
   "menu_dishes",
   {
     menuId: integer("menu_id")
@@ -105,7 +106,7 @@ export const menuDishesR = relations(menuDishes, ({ one }) => ({
 }));
 
 // User's choice
-export const userChoices = createTable(
+export const userChoices = appSchema.table(
   "user_choice",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),

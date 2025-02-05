@@ -4,8 +4,7 @@ import jwt from "jsonwebtoken";
 
 const ALLOWED_TENANTS: string[] = [
   "534a8069-2967-42a0-a777-f1e42d3ba506", // SPŠE
-  "b1f38af7-a52e-4e96-bcf2-9a272fadb888", // SOA
-  "f0d31621-d73b-4cf1-8188-27c60408b50c", // The real SOA
+  "f0d31621-d73b-4cf1-8188-27c60408b50c", // SOA
 ] as const;
 
 export async function GET(request: Request) {

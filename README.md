@@ -1,4 +1,4 @@
-# Create T3 App
+# Zradelna
 
 ## To-Do
 
@@ -12,3 +12,4 @@
 - [ ] Sentry
 - [ ] Add style to error.tsx
 - [ ] Add style to not-found.tsx (404)
+- [ ] Here or To-Go

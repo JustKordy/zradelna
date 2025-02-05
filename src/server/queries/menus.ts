@@ -21,6 +21,10 @@ export async function getMenu(date: Date) {
 
 // CREATE
 export async function createMenu(date: Date = new Date(), soupId: number) {
+  console.log(
+    "[INFO][DB]: Creating a new menu: ",
+    date.toISOString().split("T")[0],
+  );
   return db.insert(menus).values({
     date,
     soupId,
@@ -28,6 +32,9 @@ export async function createMenu(date: Date = new Date(), soupId: number) {
 }
 
 export async function addMenuItems(menuId: number, dishIds: number[]) {
+  console.log(
+    `[INFO][DB]: Creating a new menu item: menuId: ${menuId}: dishId: ${JSON.stringify(dishIds)}`,
+  );
   const batch = dishIds.map((x) => ({ menuId, dishId: x }));
 
   return db.insert(menuDishes).values(batch);

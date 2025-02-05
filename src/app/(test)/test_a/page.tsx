@@ -9,6 +9,8 @@ export default function Page() {
         <h1>Hello</h1>
         <button formAction={lala}>Click Me</button>
       </form>
+
+      <button className="border p-3">Click Me Too</button>
     </main>
   );
 }

@@ -14,6 +14,7 @@ export async function lala() {
   //   "https://www.ocu.org/-/media/ocu/images/home/alimentacion/alimentos/pizzas_selector_1600x900.jpg?rev=6a81e278-07fc-4e95-9ba1-361063f35adf&hash=B8B1264AB6FC3F4B1AE140EB390208CD",
   // );
   const data = await findDish("rizoto");
+  throw new Error("Fuck off");
 
   console.dir(data, { depth: Infinity });
 }

@@ -21,10 +21,17 @@ export async function getMenu(date: Date) {
 
 // Gets all menus in range
 export async function getMenusInRange(from: Date, to: Date) {
-  return db
-    .select()
-    .from(menus)
-    .where(between(menus.date, from, to));
+  return db.query.menus.findMany({
+    where: between(menus.date, from, to),
+    with: {
+      soup: true,
+      menusToDishes: {
+        with: {
+          dishes: true,
+        },
+      },
+    },
+  });
 }
 
 // CREATE

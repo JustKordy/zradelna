@@ -6,10 +6,11 @@
 - [x] Microsoft OAuth
 - [x] Get the user's name on Sign Up
 - [x] Auth should work for both schools
-- [ ] Supabase security
+- [x] Supabase security
 - [x] Error boundary
 - [x] CI
 - [ ] Sentry
 - [ ] Add style to error.tsx
 - [ ] Add style to not-found.tsx (404)
-- [ ] Here or To-Go
+- [x] Here or To-Go
+- [ ] Admin Role

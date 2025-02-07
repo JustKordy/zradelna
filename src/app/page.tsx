@@ -1,18 +1,15 @@
-"use client"
-import { useState } from "react";
-import { createClient } from "~/lib/supabase/server";
+"use server"
+
+import { redirect } from "next/navigation";
+import { HomepageComponent } from "~/comps/HomepageComponent";
+import { getUser } from "~/server/queries/user";
 
 export default async function HomePage() {
-  const supabase = await createClient();
-  const user = await supabase.auth.getUser();
+  const user = await getUser()
 
-  const [expanded, setExpanded] = useState<boolean>(false);
+  if(!user) redirect("/auth/login")
  
   return (
-    <div className="w-screen h-screen flex justify-center">
-      <div className="w-[200px] flex justify-center items-center flex-col">
-
-      </div>
-    </div>
+    <HomepageComponent user={user}/>
   );
 }

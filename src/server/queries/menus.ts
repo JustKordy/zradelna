@@ -2,12 +2,27 @@
 
 import { db } from "~/server/db";
 import { menuDishes, menus } from "~/server/db/schema";
-import { eq } from "drizzle-orm";
+import { between, eq } from "drizzle-orm";
 
 // GET
 export async function getMenu(date: Date) {
   return db.query.menus.findFirst({
     where: eq(menus.date, date),
+    with: {
+      soup: true,
+      menusToDishes: {
+        with: {
+          dishes: true,
+        },
+      },
+    },
+  });
+}
+
+// Gets all menus in range
+export async function getMenusInRange(from: Date, to: Date) {
+  return db.query.menus.findMany({
+    where: between(menus.date, from, to),
     with: {
       soup: true,
       menusToDishes: {

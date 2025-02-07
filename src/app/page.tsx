@@ -1,5 +1,3 @@
-"use server"
-
 import { redirect } from "next/navigation";
 import { HomepageComponent } from "~/comps/HomepageComponent";
 import { getUser } from "~/server/queries/user";

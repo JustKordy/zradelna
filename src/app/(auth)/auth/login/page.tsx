@@ -8,7 +8,7 @@ export default function Login() {
     const initialState = {
         message: "" 
     }
-    
+
     const [state, formAction, pending] = useActionState(login, initialState)
 
     return (
@@ -68,7 +68,7 @@ export default function Login() {
                         </div>
                         <input
                             type="submit"
-                            className="h-12 w-full cursor-pointer rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+                            className="h-12 w-full cursor-pointer rounded-lg bg-orange-500 text-white hover:bg-orange-600"
                             value="Přihlásit"
                         />
                         <p className="text-red-500">{state.message ? state.message : ""}</p>

@@ -2,7 +2,7 @@
 
 import { db } from "~/server/db";
 import { menuDishes, menus } from "~/server/db/schema";
-import { eq } from "drizzle-orm";
+import { between, eq } from "drizzle-orm";
 
 // GET
 export async function getMenu(date: Date) {
@@ -17,6 +17,14 @@ export async function getMenu(date: Date) {
       },
     },
   });
+}
+
+// Gets all menus in range
+export async function getMenusInRange(from: Date, to: Date) {
+  return db
+    .select()
+    .from(menus)
+    .where(between(menus.date, from, to));
 }
 
 // CREATE

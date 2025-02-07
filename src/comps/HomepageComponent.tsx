@@ -2,6 +2,7 @@
 import { User, UserResponse } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 import type IWeek from "~/interfaces/IWeek";
+import { signOut } from "~/server/queries/user";
 
 
 export const HomepageComponent = ({ user }: { user: User }) => {
@@ -14,6 +15,7 @@ export const HomepageComponent = ({ user }: { user: User }) => {
 
     const sideBarOptions: Array<{ id: number, name: string, icon: string, onClick: () => void }> = [
         { id: 1, name: "Domů", icon: "fa-solid fa-house", onClick: () => console.log("idk") },
+        { id: 2, name: "Odhlásit se", icon: "fa-solid fa-sign-out", onClick: () => signOut() }
     ]
 
     const [expanded, setExpanded] = useState<boolean>(false);
@@ -27,32 +29,41 @@ export const HomepageComponent = ({ user }: { user: User }) => {
         if (monthIndex === -1) {
             throw new Error("Invalid month name");
         }
-
+        
         const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
         const weeks: { monday: string, friday: string }[] = [];
-
+        
         let monday: string | null = null;
         let friday: string | null = null;
-
+        let firstMonday: string | null = null;
+        let firstFriday: string | null = null;
+        
         for (let day = 1; day <= daysInMonth; day++) {
             const date = new Date(Date.UTC(year, monthIndex, day));
             date.setHours(date.getHours() + 1); // Adjust for Czech timezone (UTC+1)
             const dayOfWeek = date.getUTCDay();
-
+            
             if (dayOfWeek === 1) { // Monday
                 monday = date.toISOString().split('T')[0]!;
+                if (!firstMonday) firstMonday = monday;
             }
             if (dayOfWeek === 5) { // Friday
                 friday = date.toISOString().split('T')[0]!;
+                if (!firstFriday) firstFriday = friday;
             }
-
+            
             if (monday && friday) {
                 weeks.push({ monday, friday });
                 monday = null;
                 friday = null;
             }
         }
-
+        
+        if (weeks.length > 0 && (!weeks[0]!.monday || !weeks[0]!.friday)) {
+            weeks[0]!.monday = weeks[0]!.monday || firstMonday!;
+            weeks[0]!.friday = weeks[0]!.friday || firstFriday!;
+        }
+        
         return weeks;
     }
 
@@ -101,7 +112,7 @@ export const HomepageComponent = ({ user }: { user: User }) => {
                         <div className="w-full h-[150px] bg-gray-100 rounded-lg flex justify-start items-center flex-col p-5 gap-2">
                             <p className="text-xl font-bold text-orange-500">{possibleMonths[activeMonth]}</p>
                             <div className="w-full h-full flex flex-row justify-center items-center gap-3">
-                                <div onClick={() => setActiveMonth(activeMonth - 1 < 1 ? activeMonth : activeMonth - 1)} className="w-[30px] h-full flex justify-center items-center cursor-pointer">
+                                <div onClick={() => setActiveMonth(activeMonth - 1 < 0 ? activeMonth : activeMonth - 1)} className="w-[30px] h-full flex justify-center items-center cursor-pointer">
                                     <i className="fa-solid fa-angles-left bg-orange-400 text-2xl rounded-full p-2 text-white"></i>
                                 </div>
                                     {

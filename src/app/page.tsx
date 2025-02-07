@@ -1,3 +1,4 @@
+"use server"
 import { redirect } from "next/navigation";
 import { HomepageComponent } from "~/comps/HomepageComponent";
 import type IWeek from "~/interfaces/IWeek";
@@ -9,9 +10,9 @@ export default async function HomePage() {
 
   if(!user) redirect("/auth/login")
 
- 
+
  
   return (
-    <HomepageComponent user={user}/>
+    <HomepageComponent user={user} />
   );
 }

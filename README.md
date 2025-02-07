@@ -10,7 +10,8 @@
 - [ ] Admin dashboard
 - [ ] Menu page
 - [ ] User choice
-## Back-end
+- [ ] FIX before new year!!! First month is messed up. You will see. No explanation needed.
+## Back-end 
 - [x] Microsoft OAuth
 - [x] Get the user's name on Sign Up
 - [x] Auth should work for both schools

@@ -29,7 +29,9 @@ export default async function LoginPage() {
           </span>
         </button>
       </form>
-      <div className="border border-lime-500 p-3">{user?.id}</div>
+      <div className="border border-lime-500 p-3">
+        {user?.id} : {user?.role}
+      </div>
     </main>
   );
 }

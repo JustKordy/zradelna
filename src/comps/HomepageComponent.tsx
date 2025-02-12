@@ -20,17 +20,12 @@ export function HomepageComponent() {
     "Prosinec",
   ];
 
-  const sideBarOptions: Array<{
-    id: number;
-    name: string;
-    icon: string;
-    onClick: () => Promise<void>;
-  }> = [
+  const sideBarOptions = [
     {
       id: 1,
       name: "Domů",
       icon: "fa-solid fa-house",
-      onClick: async () => console.log("idk"),
+      onClick: () => console.log("AAA"),
     },
     {
       id: 2,
@@ -134,7 +129,7 @@ export function HomepageComponent() {
           <div className="flex h-full w-full flex-col items-center justify-center">
             {sideBarOptions.map((option) => {
               return (
-                <div
+                <button
                   key={option.id}
                   onClick={option.onClick}
                   className={
@@ -144,7 +139,7 @@ export function HomepageComponent() {
                 >
                   <i className={option.icon + " text-lg"}></i>
                   {expanded && <p>{option.name}</p>}
-                </div>
+                </button>
               );
             })}
           </div>

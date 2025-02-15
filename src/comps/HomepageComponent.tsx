@@ -1,7 +1,6 @@
 "use client"
 import { User, UserResponse } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
-import type IWeek from "~/interfaces/IWeek";
 import { signOut } from "~/server/queries/user";
 
 
@@ -11,6 +10,97 @@ export const HomepageComponent = ({ user }: { user: User }) => {
 
     const possibleMonths: Array<string> = ["Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"];
 
+    function extractDays(year: number):  Array<{month: number, weeks: Array<{start: string, end: string}>}> {
+        
+        const temp: Array<{start: string, end: string}> = []
+        
+        const currentDate = new Date(year, 0, 1)
+        while(currentDate.getFullYear() == year){
+            
+            if(currentDate.getDay() == 1){
+                const first = currentDate.getDate() + "." + currentDate.getMonth()
+                currentDate.setDate(currentDate.getDate() + 4)
+                temp.push({
+                    start: first,
+                    end: currentDate.getDate() + "." + currentDate.getMonth()
+                })
+                currentDate.setDate(currentDate.getDate() + 3)
+            }
+            if(currentDate.getDay() == 2){
+                const first = currentDate.getDate() + "." + currentDate.getMonth()
+                currentDate.setDate(currentDate.getDate() + 3)
+                temp.push({
+                    start: first,
+                    end: currentDate.getDate() + "." + currentDate.getMonth()
+                })
+                currentDate.setDate(currentDate.getDate() + 3)
+            }
+            if(currentDate.getDay() == 3){
+                const first = currentDate.getDate() + "." + currentDate.getMonth()
+                currentDate.setDate(currentDate.getDate() + 2)
+                temp.push({
+                    start: first,
+                    end: currentDate.getDate() + "." + currentDate.getMonth()
+                })
+                currentDate.setDate(currentDate.getDate() + 3)
+            }
+            if(currentDate.getDay() == 4){
+                const first = currentDate.getDate() + "." + currentDate.getMonth()
+                currentDate.setDate(currentDate.getDate() + 1)
+                temp.push({
+                    start: first,
+                    end: currentDate.getDate() + "." + currentDate.getMonth()
+                })
+                currentDate.setDate(currentDate.getDate() + 3)
+            }
+            if(currentDate.getDay() == 5){
+                const first = currentDate.getDate() + "." + currentDate.getMonth()
+                temp.push({
+                    start: first,
+                    end: currentDate.getDate() + "." + currentDate.getMonth()
+                })
+                currentDate.setDate(currentDate.getDate() + 3)
+            }
+            if(currentDate.getDay() == 6){
+                currentDate.setDate(currentDate.getDate() + 2)
+            }
+            if(currentDate.getDay() == 7){
+                currentDate.setDate(currentDate.getDate() + 1)
+            }
+            
+        }
+
+        // console.log(temp    )
+        const temp2: Array<{month: number, weeks: Array<{start: string, end: string}>}> = []
+
+        for(let monthIndex = 0; monthIndex < 12; monthIndex++){
+            const temp3: Array<{start: string, end: string}> = []
+
+            for (let index = 0; index < temp.length; index++) {
+
+                if(temp[index]!.start.split(".")[1] == (monthIndex).toString())
+                {
+                    const splittedStart = temp[index]!.start.split(".")
+                    const splittedEnd = temp[index]!.end.split(".")
+                    temp3.push(
+                        {   start: splittedStart[0] + "." + ((+splittedStart[1]!) + 1),
+                            end: splittedEnd[0] + "." + ((+splittedEnd[1]!) + 1)
+                        });
+                }
+                
+            }
+            temp2.push({month: monthIndex, weeks: temp3})
+        }
+
+        // temp2.map((tem) => {
+        //     for(let i = 0; i < tem.weeks.length; i++){
+        //         console.log("Month " + possibleMonths[tem.month] + " has start " + tem.weeks[i]?.start + " and end " + tem.weeks[i]?.end)  
+        //     }
+        // })
+
+        return temp2;
+        
+    }
 
 
     const sideBarOptions: Array<{ id: number, name: string, icon: string, onClick: () => void }> = [
@@ -19,70 +109,37 @@ export const HomepageComponent = ({ user }: { user: User }) => {
     ]
 
     const [expanded, setExpanded] = useState<boolean>(false);
-    const [weeks, setWeeks] = useState<Array<{ week: { monday: string, friday: string }, active: boolean }>>([]);
-    const [activeWeek, setActiveWeek] = useState<number>();
+    const [weeks, setWeeks] = useState<Array<{start: string, end: string}>>([]);
+    const [activeWeek, setActiveWeek] = useState<number>(0);
     const [activeMonth, setActiveMonth] = useState<number>(date.getMonth());
+    const [total, setTotal] = useState< Array<{month: number, weeks: Array<{start: string, end: string}>}>>(extractDays(date.getFullYear()))
 
 
-    function getMondaysAndFridays(year: number, month: string): { monday: string, friday: string }[] {
-        const monthIndex = possibleMonths.indexOf(month);
-        if (monthIndex === -1) {
-            throw new Error("Invalid month name");
-        }
-        
-        const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
-        const weeks: { monday: string, friday: string }[] = [];
-        
-        let monday: string | null = null;
-        let friday: string | null = null;
-        let firstMonday: string | null = null;
-        let firstFriday: string | null = null;
-        
-        for (let day = 1; day <= daysInMonth; day++) {
-            const date = new Date(Date.UTC(year, monthIndex, day));
-            date.setHours(date.getHours() + 1); // Adjust for Czech timezone (UTC+1)
-            const dayOfWeek = date.getUTCDay();
-            
-            if (dayOfWeek === 1) { // Monday
-                monday = date.toISOString().split('T')[0]!;
-                if (!firstMonday) firstMonday = monday;
-            }
-            if (dayOfWeek === 5) { // Friday
-                friday = date.toISOString().split('T')[0]!;
-                if (!firstFriday) firstFriday = friday;
-            }
-            
-            if (monday && friday) {
-                weeks.push({ monday, friday });
-                monday = null;
-                friday = null;
-            }
-        }
-        
-        if (weeks.length > 0 && (!weeks[0]!.monday || !weeks[0]!.friday)) {
-            weeks[0]!.monday = weeks[0]!.monday || firstMonday!;
-            weeks[0]!.friday = weeks[0]!.friday || firstFriday!;
-        }
-        
-        return weeks;
-    }
-
+    
+    
     const currentWeek = possibleMonths[activeMonth]!
+    
+    
+    
+   
 
     
     useEffect(() => {
+        
+        console.log(total)
+        const res = total?.filter((tot) => tot.month == activeMonth)
+        const temp: Array<{start: string, end: string}> = []
+        res!.map((r) => {
+            r.weeks.map((week) => {
+                temp.push({start: week.start, end: week.end})
+            })
+        })
+        setWeeks(temp)
+    }, [activeMonth])
 
-        const currentYear = new Date().getFullYear();
+   
 
-        const temp: Array<{ week: { monday: string, friday: string }, active: boolean }> = []
-        const mondaysAndFridays = getMondaysAndFridays(currentYear, currentWeek);
-        mondaysAndFridays.map((day, index) => {
-            temp.push({ week: { monday: day.monday, friday: day.friday }, active: activeWeek ? activeWeek == index ? true : false : index == 0 ? true : false })
-        }, [])
-        setWeeks(temp);
-
-    }, [activeWeek, activeMonth])
-
+  
     return (
         <>
             <div className="w-screen h-screen bg-orange-400 flex justify-center items-center">
@@ -118,11 +175,11 @@ export const HomepageComponent = ({ user }: { user: User }) => {
                                     {
                                         weeks.map((week, index) => {
                                             return (
-                                                <div onClick={() => setActiveWeek(index)} key={index} className={(week.active ? "bg-orange-400 text-white " : "text-orange-400 border-2 border-orange-400 hover:bg-orange-100 ") + " w-[200px] h-full rounded-lg flex flex-col justify-center items-center bg-gray-100 cursor-pointer gap-1"}>
+                                                <div onClick={() => setActiveWeek(index)} key={index} className={(activeWeek == index ? "bg-orange-400 text-white " : "text-orange-400 border-2 border-orange-400 hover:bg-orange-100 ") + " w-[200px] h-full rounded-lg flex flex-col justify-center items-center bg-gray-100 cursor-pointer gap-1"}>
                                                     <div className="flex flex-row justify-center items-center gap-2">
-                                                        <p className="font-bold">{week.week.monday.split("-")[2] + "." + week.week.monday.split("-")[1]}</p>
+                                                        <p className="font-bold">{week.start}</p>
                                                         <span className="p-0 m-0">-</span>
-                                                        <p className="font-bold">{week.week.friday.split("-")[2] + "." + week.week.friday.split("-")[1]}</p>
+                                                        <p className="font-bold">{week.end}</p>
                                                     </div>
                                                 </div>
                                             )

@@ -18,6 +18,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${mt.className}`}>
       <head>
+        <script
+          crossOrigin="anonymous"
+          src="//unpkg.com/react-scan/dist/auto.global.js"
+        />
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"

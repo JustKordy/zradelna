@@ -1,5 +1,5 @@
 import { DishesComponent } from "~/comps/DishesComponent";
-import IDish from "~/interfaces/IDish";
+import type IDish from "~/interfaces/IDish";
 import { db } from "~/server/db";
 
 export default async function Dishes() {

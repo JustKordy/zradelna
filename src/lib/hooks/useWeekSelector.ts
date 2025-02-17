@@ -111,9 +111,12 @@ export function useWeekSelector() {
     });
   }, [week, weeks]);
 
-  const selectWeek = useCallback((date: Date) => {
-    setWeekIdx(getWeekIndexFromDate(weeks, date));
-  }, []);
+  const selectWeek = useCallback(
+    (date: Date) => {
+      setWeekIdx(getWeekIndexFromDate(weeks, date));
+    },
+    [weeks],
+  );
 
   return {
     week,

@@ -1,9 +1,9 @@
-import { WeekSelector } from "~/comps/WeekSelector";
+import { MenuSelection } from "~/comps/manuSelection";
 
-export default async function Page() {
+export default function Page() {
   return (
     <main>
-      <WeekSelector />
+      <MenuSelection />
     </main>
   );
 }

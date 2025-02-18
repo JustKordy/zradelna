@@ -51,7 +51,7 @@ export function getWeeksForMonth(
 }
 
 export function useWeekSelector() {
-  const weekContext = useWeekContext();
+  const weekCtx = useWeekContext();
   // Get all weeks in a year
   const weeks = useMemo(() => getWeeksInYear(new Date().getFullYear()), []);
   // The current week
@@ -62,7 +62,8 @@ export function useWeekSelector() {
   if (!week) throw new Error("Invalid week index");
   const month = MONTHS[week.start.getMonth()];
   if (!month) throw new Error("Invalid month index");
-  weekContext.setWeek(week);
+  // Set the week context
+  weekCtx.setWeek(week);
 
   const monthWeeks = getWeeksForMonth(
     weeks,

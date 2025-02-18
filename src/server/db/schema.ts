@@ -8,6 +8,7 @@ import {
   index,
   integer,
   pgSchema,
+  pgTableCreator,
   primaryKey,
   text,
   timestamp,
@@ -22,7 +23,9 @@ import {
  */
 export const appSchema = pgSchema("app");
 
-export const dishes = appSchema.table(
+export const createTable = pgTableCreator((name) => `zradelna_${name}`);
+
+export const dishes = createTable(
   "dishes",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
@@ -45,30 +48,28 @@ export const dishes = appSchema.table(
 );
 
 // Menu for a day
-export const menus = appSchema
-  .table(
-    "menus",
-    {
-      id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-      date: date("date", { mode: "date" }).notNull(),
-      soupId: integer("soup_id")
-        .references(() => dishes.id)
-        .notNull(),
+export const menus = createTable(
+  "menus",
+  {
+    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    date: date("date", { mode: "date" }).notNull(),
+    soupId: integer("soup_id")
+      .references(() => dishes.id)
+      .notNull(),
 
-      createdAt: timestamp("created_at")
-        .default(sql`CURRENT_TIMESTAMP`)
-        .notNull(),
-      updatedAt: timestamp("updated_at")
-        .default(sql`CURRENT_TIMESTAMP`)
-        .notNull()
-        .$onUpdate(() => new Date()),
-    },
-    (table) => [index("date_idx").on(table.date)],
-  )
-  .enableRLS();
+    createdAt: timestamp("created_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [index("date_idx").on(table.date)],
+);
 
 // Define the join table for menus and dishes
-export const menuDishes = appSchema.table(
+export const menuDishes = createTable(
   "menu_dishes",
   {
     menuId: integer("menu_id")
@@ -95,7 +96,7 @@ export const dishesR = relations(dishes, ({ many }) => ({
   soups: many(menus),
 }));
 export const menuDishesR = relations(menuDishes, ({ one }) => ({
-  menu: one(menus, {
+  menus: one(menus, {
     fields: [menuDishes.menuId],
     references: [menus.id],
   }),
@@ -106,7 +107,7 @@ export const menuDishesR = relations(menuDishes, ({ one }) => ({
 }));
 
 // User's choice
-export const userChoices = appSchema.table(
+export const userChoices = createTable(
   "user_choice",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),

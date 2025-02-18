@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { getMenu } from "~/server/queries/menus";
 import { getUser } from "~/server/queries/user";
 
 export async function GET() {
@@ -15,7 +16,10 @@ export async function GET() {
   const user = await getUser();
   if (!user) redirect("/error");
 
+  const a = getMenu(new Date());
+
   return Response.json({
     message: "Super secret message",
+    a,
   });
 }

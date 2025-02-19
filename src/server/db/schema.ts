@@ -29,7 +29,7 @@ export const dishes = createTable(
   "dishes",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    name: varchar("name", { length: 255 }).notNull(),
+    name: varchar("name", { length: 255 }).unique().notNull(),
     isSoup: boolean("is_soup").default(false).notNull(),
     description: text("description"),
     imgURL: varchar("img_url", { length: 1024 }),
@@ -52,7 +52,7 @@ export const menus = createTable(
   "menus",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    date: date("date", { mode: "date" }).notNull(),
+    date: date("date", { mode: "date" }).unique().notNull(),
     soupId: integer("soup_id")
       .references(() => dishes.id)
       .notNull(),

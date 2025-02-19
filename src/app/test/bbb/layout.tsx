@@ -6,7 +6,7 @@ export default function Layout({
   return (
     <>
       <WeekContextProvider>
-        <main className="min-h-screen">{children}</main>
+        <main className="flex min-h-screen flex-col">{children}</main>
       </WeekContextProvider>
     </>
   );

@@ -1,7 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
-import IDish from "~/interfaces/IDish";
+import type IDish from "~/interfaces/IDish";
 
 export function DishesComponent({ dishes }: { dishes: IDish[] }) {
   const [showInformationDesc, setShowInformationDesc] = useState<boolean>();
@@ -19,11 +20,9 @@ export function DishesComponent({ dishes }: { dishes: IDish[] }) {
                 className="mb-3 flex h-32 w-full items-center justify-between rounded-lg bg-gray-100 px-4"
               >
                 <div className="flex h-full w-full flex-row items-center justify-start">
-                  <img
-                    src={
-                      dish.imgURL ??
-                      "https://e7.pngegg.com/pngimages/946/869/png-clipart-responsive-web-design-http-404-web-template-system-others-miscellaneous-purple.png"
-                    }
+                  <Image
+                    src={dish.imgURL ?? ""}
+                    alt="Dish image"
                     className="w-14 rounded-lg bg-white object-cover md:h-[60%] md:w-20 xl:h-[70%] xl:w-20"
                   />
 
@@ -83,4 +82,3 @@ export function DishesComponent({ dishes }: { dishes: IDish[] }) {
     </>
   );
 }
-

@@ -6,5 +6,5 @@ export default {
   dbCredentials: {
     url: process.env.POSTGRES_URL!,
   },
-  schemaFilter: ["app"],
+  tablesFilter: ["zradelna_*"],
 } satisfies Config;

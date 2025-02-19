@@ -19,7 +19,7 @@ export async function addDish(
 }
 
 // GET
-// Finds dishes by name
+// Finds dishes by the name
 export async function findDish(query: string, soup = false) {
   return db
     .select()

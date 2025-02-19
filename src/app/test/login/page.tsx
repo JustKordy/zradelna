@@ -1,18 +1,14 @@
 import { getUser } from "~/server/queries/user";
 import { login, signInWithMicrosoft } from "./actions";
-import { redirect } from "next/navigation";
 
 export default async function LoginPage() {
   const user = await getUser();
-  // if (user) {
-  //   redirect("/");
-  // }
 
   return (
     <main className="flex flex-col gap-6 bg-zinc-300 p-6">
       <form className="flex w-[30%] flex-col gap-2">
         <div>
-          <label htmlFor="email">Email:</label> 
+          <label htmlFor="email">Email:</label>
           <input id="email" name="email" type="email" required />
         </div>
         <div>
@@ -33,7 +29,9 @@ export default async function LoginPage() {
           </span>
         </button>
       </form>
-      <div className="border border-lime-500 p-3">{user?.id}</div>
+      <div className="border border-lime-500 p-3">
+        {user?.id} : {user?.role}
+      </div>
     </main>
   );
 }

@@ -237,6 +237,9 @@ export const HomepageComponent = ({ user }: { user: User }) => {
                             })
                         }
                     </div>
+                </aside>
+                </div>
+                </>
 
     return weeks;
   }
@@ -327,6 +330,7 @@ export const HomepageComponent = ({ user }: { user: User }) => {
                 </div>
                 {weeks.map((week, index) => {
                   return (
+                   <>
                     <div
                       onClick={() => setActiveWeek(index)}
                       key={index}

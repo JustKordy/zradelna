@@ -19,7 +19,7 @@ export async function getMenu(date: Date) {
   });
 }
 
-// Gets all menus in range  
+// Gets all menus in range
 export async function getMenusInRange(from: Date, to: Date) {
   return db.query.menus.findMany({
     where: between(menus.date, from, to),

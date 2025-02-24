@@ -5,6 +5,7 @@ import { Spinner } from "~/comps/spinner";
 import { addDish, findDish } from "~/server/queries/dish";
 
 function Page() {
+  //refs and usestates
   const inputRefName = React.createRef<HTMLInputElement>();
   const inputRefDes = React.createRef<HTMLInputElement>();
   const inputRefImg = React.createRef<HTMLInputElement>();
@@ -27,6 +28,7 @@ function Page() {
   const [isSoup, setIsSoup] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
+  //fetch dishList
   useEffect(() => {
     setIsLoading(true);
     const fetchDishes = async () => {
@@ -37,6 +39,7 @@ function Page() {
     fetchDishes().catch(console.error);
   }, [isSoup]);
 
+  //submiting the form
   const submitForm = async () => {
     if (inputRefName.current && inputRefDes.current && inputRefImg.current) {
       try {
@@ -54,7 +57,7 @@ function Page() {
         setIsLoading(true);
         console.error(e);
         setMessage({
-          message: "něco se pokazilo error: " + String(e),
+          message: "něco se pokazilo error: ",
           state: false,
         });
         setIsLoading(false);
@@ -68,42 +71,31 @@ function Page() {
       <div className="w-full gap-4 p-5">
         <div className="mt-10 flex w-full flex-col justify-center gap-4 md:flex-row">
           <div className="flex w-full flex-col items-center justify-center gap-4 bg-slate-100 text-center md:w-full">
-            <h1 className="text-center text-lg font-bold text-orange-500">
+            <h1 className="text-center my-5 text-lg font-bold text-orange-500">
               Přidání menu
             </h1>
 
             <div className="flex flex-row">
-              <h1 className="text-md me-3 mt-2 font-bold text-orange-500">
-                Název:
-              </h1>
               <input
                 ref={inputRefName}
-                className="mb-10 me-2 w-full rounded-lg border-2 border-orange-400 py-2 ps-1 placeholder:text-orange-400 focus:outline-2 focus:outline-offset-2 focus:outline-orange-400"
-                placeholder="Hledat Jídlo"
+                className="mb-5 me-2 w-1/2 rounded-lg border-2 border-orange-400 py-2 ps-1 placeholder:text-orange-400 focus:outline-2 focus:outline-offset-2 focus:outline-orange-400"
+                placeholder="Název Jídla"
                 type="text"
               />
-            </div>
-            <div className="flex flex-row">
-              <h1 className="text-md me-3 mt-2 font-bold text-orange-500">
-                Popis:
-              </h1>
               <input
                 ref={inputRefDes}
-                className="mb-10 me-2 w-full rounded-lg border-2 border-orange-400 py-2 ps-1 placeholder:text-orange-400 focus:outline-2 focus:outline-offset-2 focus:outline-orange-400"
-                placeholder="Hledat Jídlo"
+                className="mb-5 w-1/2 rounded-lg border-2 border-orange-400 py-2 ps-1 placeholder:text-orange-400 focus:outline-2 focus:outline-offset-2 focus:outline-orange-400"
+                placeholder="Popis Jídla"
                 type="text"
               />
             </div>
             <div className="flex flex-row">
-              <h1 className="text-md me-3 mt-2 font-bold text-orange-500">
-                Obrázek:
-              </h1>
               <input
                 ref={inputRefImg}
-                className="mb-10 me-2 w-full rounded-lg border-2 border-orange-400 py-2 ps-1 placeholder:text-orange-400 focus:outline-2 focus:outline-offset-2 focus:outline-orange-400"
-                placeholder="Hledat Jídlo"
+                className="mb-5 me-2 w-full rounded-lg border-2 background-white border-orange-400 py-2 ps-1 placeholder:text-orange-400 focus:outline-2 focus:outline-offset-2 focus:outline-orange-400"
+                placeholder="Obrázek Jídla"
                 type="file"
-              />
+                />
             </div>
             <div className="flex flex-row">
               <input
@@ -143,7 +135,7 @@ function Page() {
                 <div>
                   <h1
                     className={
-                      message.state ? "text-orange-500" : "text-red-500"
+                      message.state ? "text-green-500" : "text-red-500"
                     }
                   >
                     {message.message}
@@ -155,7 +147,7 @@ function Page() {
             <div className="flex flex-row">
               <button
                 onClick={submitForm}
-                className="ms-4 rounded-lg border-2 border-orange-500 p-1 px-3 font-medium text-orange-500 duration-300 ease-in-out hover:bg-orange-500 hover:text-white"
+                className="ms-4 rounded-lg border-2 w-full border-orange-400 p-1 px-10 font-medium text-orange-400 duration-300 ease-in-out hover:bg-orange-400 hover:text-white"
               >
                 Podvrdit
               </button>

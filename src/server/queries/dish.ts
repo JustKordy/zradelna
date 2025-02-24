@@ -9,12 +9,14 @@ export async function addDish(
   name: string,
   description?: string,
   imgURL?: string,
+  isSoup = false
 ) {
   console.log("[INFO][DB]: Adding dish: ", name);
   return db.insert(dishes).values({
     name,
     description,
     imgURL,
+    isSoup
   });
 }
 

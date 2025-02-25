@@ -32,9 +32,9 @@ function Page() {
   const inputRefPol = React.createRef<HTMLInputElement>();
 
   const handleInput = async () => {
-    if (inputRef.current) {
+    if (inputRef.current && inputRefPol.current) {
       try {
-        const result = await findDish(inputRef.current.value, false);
+        const result = await findDish(inputRef.current.value, inputRefPol.current.value === "true");
         setSearchRes(result);
       } catch (e) {
         console.error(e);
@@ -54,7 +54,10 @@ function Page() {
 
   return (
     <div className="">
-      <div className="w-full">
+      <div className="w-full gap-4 p-5">
+        <div className="bg-slate-100 w-full flex flex-col justify-center gap-4 md:flex-row">
+          <h1>tydny</h1>
+        </div>
       </div>
       <div className="w-full gap-4 p-5">
         <div className="mt-10 flex w-full flex-col justify-center gap-4 md:flex-row">
@@ -103,6 +106,8 @@ function Page() {
                 </div>
               ))}
             </div>
+              
+
             <div>
               {searchArr.map((dish, i) => (
                 <span key={crypto.randomUUID()}>
@@ -113,7 +118,7 @@ function Page() {
                 </span>
               ))}
             </div>
-            <div className="flex flex-row">
+            <div className="flex mb-5 flex-row">
               <button className="ms-4 rounded-lg border-2 border-orange-500 p-1 px-3 font-medium text-orange-500 duration-300 ease-in-out hover:bg-orange-500 hover:text-white">
                 Podvrdit
               </button>

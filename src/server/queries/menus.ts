@@ -1,8 +1,9 @@
 "use server";
 
 import { db } from "~/server/db";
-import { menuDishes, menus } from "~/server/db/schema";
-import { between, eq } from "drizzle-orm";
+import { menuDishes, menus, userChoices } from "~/server/db/schema";
+import { and, between, eq } from "drizzle-orm";
+import { getUser } from "./user";
 
 // GET
 export async function getMenu(date: Date) {
@@ -24,6 +25,27 @@ export async function getMenusInRange(from: Date, to: Date) {
   return db.query.menus.findMany({
     where: between(menus.date, from, to),
     with: {
+      soup: true,
+      menusToDishes: {
+        with: {
+          dishes: true,
+        },
+      },
+    },
+  });
+}
+
+// This fetches all menus in a range, but includes the choices user already made.
+export async function getMenusInRangeWithUserSelect(from: Date, to: Date) {
+  const user = await getUser();
+  if (!user) throw new Error("Unauthorized");
+
+  return db.query.menus.findMany({
+    where: between(menus.date, from, to),
+    with: {
+      userChoices: {
+        where: eq(userChoices.userId, user.id),
+      },
       soup: true,
       menusToDishes: {
         with: {

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
-import { getMenu } from "~/server/queries/menus";
+import { getWeeksInYear } from "~/lib/weeks";
+import { getMenu, getMenusInRangeWithUserSelect } from "~/server/queries/menus";
 import { getUser } from "~/server/queries/user";
 
 export async function GET() {
@@ -16,10 +17,16 @@ export async function GET() {
   const user = await getUser();
   if (!user) redirect("/error");
 
-  const a = getMenu(new Date());
+  const week = getWeeksInYear(2025);
+  const data = await getMenusInRangeWithUserSelect(
+    user.id,
+    week[7]!.start,
+    week[7]!.end,
+  );
 
   return Response.json({
     message: "Super secret message",
-    a,
+    week: week[7]?.start,
+    data,
   });
 }

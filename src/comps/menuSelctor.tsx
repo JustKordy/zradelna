@@ -2,13 +2,13 @@
 
 import { useActionState, useEffect, useState } from "react";
 import { useWeekContext } from "~/lib/hooks/useWeekContext";
-import { getMenusInRange } from "~/server/queries/menus";
+import { getMenusInRangeWithUserSelect } from "~/server/queries/menus";
 import { Spinner } from "./spinner";
 import { capitalize } from "~/lib/utils";
 import { LoadingButton } from "./loading-button";
 import { makeUserChoiceFromForm } from "~/server/queries/user";
 
-type Menus = Awaited<ReturnType<typeof getMenusInRange>>;
+type Menus = Awaited<ReturnType<typeof getMenusInRangeWithUserSelect>>;
 
 export function MenuSelector() {
   const weekCtx = useWeekContext();
@@ -22,7 +22,7 @@ export function MenuSelector() {
     // Fetch menu
     // Server query
     setIsLoading(true);
-    getMenusInRange(week.start, week.end)
+    getMenusInRangeWithUserSelect(week.start, week.end)
       .then((x) => setMenus(x))
       .then(() => setIsLoading(false))
       .catch((e) => console.error(e));
@@ -85,6 +85,9 @@ function DayMenu(props: { menu: Menus[number] }) {
               <div className="flex items-center ps-3">
                 <input
                   id={`list-${x.menuId}-${x.dishId}`}
+                  // This should prevent users from creating more than 1 choice, but it's kinda ugly and user can't change choices they already made
+                  // There should be just one choice
+                  checked={props.menu.userChoices[0]?.dishId === x.dishId}
                   type="radio"
                   name="dish"
                   value={x.dishId}

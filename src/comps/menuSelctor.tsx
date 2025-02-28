@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useWeekContext } from "~/lib/hooks/useWeekContext";
 import { getMenusInRange } from "~/server/queries/menus";
 import { Spinner } from "./spinner";
-import { capitalize, sleep } from "~/lib/utils";
+import { capitalize } from "~/lib/utils";
 import { LoadingButton } from "./loading-button";
-import { makeUSerChoiceFromForm } from "~/server/queries/user";
+import { makeUserChoiceFromForm } from "~/server/queries/user";
 
 type Menus = Awaited<ReturnType<typeof getMenusInRange>>;
 
@@ -50,7 +50,16 @@ export function MenuSelector() {
 }
 
 function DayMenu(props: { menu: Menus[number] }) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [error, dispatch, isPending] = useActionState<
+    { error: string | undefined },
+    FormData
+  >(
+    (prevState: { error: string | undefined }, formData: FormData) =>
+      makeUserChoiceFromForm(prevState, formData, props.menu.id),
+    {
+      error: undefined,
+    },
+  );
 
   const weekDay = props.menu.date.toLocaleDateString("cs-CZ", {
     weekday: "long",
@@ -64,7 +73,9 @@ function DayMenu(props: { menu: Menus[number] }) {
         <span>{capitalize(weekDay)}</span> - <span>{date}</span>
       </h3>
       <p>{props.menu.soup.name}</p>
-      <form action={makeUSerChoiceFromForm}>
+      <form action={dispatch}>
+        <label htmlFor={`${props.menu.id}`}>Sebou </label>
+        <input name="togo" type="checkbox" id={`${props.menu.id}`} />
         <ul className="w-1/2 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900">
           {props.menu.menusToDishes.map((x) => (
             <li
@@ -90,7 +101,7 @@ function DayMenu(props: { menu: Menus[number] }) {
             </li>
           ))}
         </ul>
-        {isLoading ? (
+        {isPending ? (
           // Loading button
           <LoadingButton />
         ) : (
@@ -101,6 +112,7 @@ function DayMenu(props: { menu: Menus[number] }) {
             Obědnat
           </button>
         )}
+        <span className="font-semibold text-red-700">{error.error ?? ""}</span>
       </form>
     </div>
   );

@@ -34,7 +34,6 @@ function getWeekIndexFromDate(weeks: Week[], date: Date = new Date()) {
   }
 
   const i = weeks.findIndex((x) => date >= x.start && date <= x.end);
-  console.log("IIIIII: ", i);
   return i === -1 ? 0 : i;
 }
 

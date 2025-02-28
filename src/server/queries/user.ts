@@ -73,3 +73,8 @@ export async function makeUserChoice(menuId: number, dishId: number) {
     dishId,
   });
 }
+
+export async function makeUSerChoiceFromForm(formData: FormData) {
+  // TODO: Data validation
+  console.log(formData);
+}

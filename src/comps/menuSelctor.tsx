@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { useWeekContext } from "~/lib/hooks/useWeekContext";
 import { getMenusInRange } from "~/server/queries/menus";
 import { Spinner } from "./spinner";
-import { capitalize } from "~/lib/utils";
+import { capitalize, sleep } from "~/lib/utils";
+import { LoadingButton } from "./loading-button";
+import { makeUSerChoiceFromForm } from "~/server/queries/user";
 
 type Menus = Awaited<ReturnType<typeof getMenusInRange>>;
 
@@ -48,6 +50,8 @@ export function MenuSelector() {
 }
 
 function DayMenu(props: { menu: Menus[number] }) {
+  const [isLoading, setIsLoading] = useState(false);
+
   const weekDay = props.menu.date.toLocaleDateString("cs-CZ", {
     weekday: "long",
   });
@@ -60,14 +64,7 @@ function DayMenu(props: { menu: Menus[number] }) {
         <span>{capitalize(weekDay)}</span> - <span>{date}</span>
       </h3>
       <p>{props.menu.soup.name}</p>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          for (const a of e.target) {
-            console.log(a.value);
-          }
-        }}
-      >
+      <form action={makeUSerChoiceFromForm}>
         <ul className="w-1/2 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900">
           {props.menu.menusToDishes.map((x) => (
             <li
@@ -78,7 +75,9 @@ function DayMenu(props: { menu: Menus[number] }) {
                 <input
                   id={`list-${x.menuId}-${x.dishId}`}
                   type="radio"
-                  name={`list-${x.menuId}`}
+                  name="dish"
+                  value={x.dishId}
+                  required
                   className="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500"
                 />
                 <label
@@ -91,12 +90,17 @@ function DayMenu(props: { menu: Menus[number] }) {
             </li>
           ))}
         </ul>
-        <button
-          type="submit"
-          className="mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300"
-        >
-          Obědnat
-        </button>
+        {isLoading ? (
+          // Loading button
+          <LoadingButton />
+        ) : (
+          <button
+            type="submit"
+            className="mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300"
+          >
+            Obědnat
+          </button>
+        )}
       </form>
     </div>
   );

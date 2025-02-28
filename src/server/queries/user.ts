@@ -5,11 +5,8 @@ import { createClient } from "~/lib/supabase/server";
 import { env } from "~/env";
 import { db } from "../db";
 import { userChoices } from "../db/schema";
-import { sleep } from "~/lib/utils";
-import { useId } from "react";
 
 /// AUTH
-
 export async function getUser() {
   const supabase = await createClient();
   const {
@@ -92,7 +89,6 @@ export async function makeUserChoiceFromForm(
   const dishId = formData.get("dish");
   if (!dishId) return { error: "Provide dish id" };
   const toGo = formData.get("togo");
-  if (!toGo) return { error: "Provide togo" };
 
   try {
     await makeUserChoice(menuId, Number(dishId), Boolean(toGo));

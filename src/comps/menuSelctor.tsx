@@ -85,9 +85,10 @@ function DayMenu(props: { menu: Menus[number] }) {
               <div className="flex items-center ps-3">
                 <input
                   id={`list-${x.menuId}-${x.dishId}`}
-                  // This should prevent users from creating more than 1 choice, but it's kinda ugly and user can't change choices they already made
                   // There should be just one choice
-                  checked={props.menu.userChoices[0]?.dishId === x.dishId}
+                  defaultChecked={
+                    props.menu.userChoices[0]?.dishId === x.dishId
+                  }
                   type="radio"
                   name="dish"
                   value={x.dishId}

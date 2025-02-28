@@ -12,6 +12,7 @@ import {
   primaryKey,
   text,
   timestamp,
+  uniqueIndex,
   varchar,
 } from "drizzle-orm/pg-core";
 
@@ -131,6 +132,7 @@ export const userChoices = createTable(
   (table) => [
     index("user_id_idx").on(table.userId),
     index("menu_id_idx").on(table.menuId),
+    uniqueIndex("user_id_to_menu_id_idx").on(table.userId, table.menuId),
   ],
 );
 

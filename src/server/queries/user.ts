@@ -7,7 +7,6 @@ import { db } from "../db";
 import { userChoices } from "../db/schema";
 
 /// AUTH
-
 export async function getUser() {
   const supabase = await createClient();
   const {
@@ -63,13 +62,39 @@ export async function LogInWithAzure() {
 }
 
 // Menu
-export async function makeUserChoice(menuId: number, dishId: number) {
+export async function makeUserChoice(
+  menuId: number,
+  dishId: number,
+  toGo: boolean,
+) {
   const user = await getUser();
   if (!user) throw new Error("Unauthorized");
 
+  console.log(
+    `[INFO]: Creating user choice: User: ${user.id} Menu: ${menuId} Dish: ${dishId}`,
+  );
   return db.insert(userChoices).values({
     userId: user.id,
     menuId,
     dishId,
+    toGo,
   });
+}
+
+export async function makeUserChoiceFromForm(
+  prevState: unknown,
+  formData: FormData,
+  menuId: number,
+): Promise<{ error: string | undefined }> {
+  const dishId = formData.get("dish");
+  if (!dishId) return { error: "Provide dish id" };
+  const toGo = formData.get("togo");
+
+  try {
+    await makeUserChoice(menuId, Number(dishId), Boolean(toGo));
+    return { error: undefined };
+  } catch (e) {
+    console.error("[ERROR]: Failed to make user choice: ", e);
+    return { error: "Something wen wrong" };
+  }
 }

@@ -2,7 +2,7 @@
 
 import { db } from "~/server/db";
 import { menuDishes, menus, userChoices } from "~/server/db/schema";
-import { and, between, eq } from "drizzle-orm";
+import { between, eq } from "drizzle-orm";
 import { getUser } from "./user";
 
 // GET

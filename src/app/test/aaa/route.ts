@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getWeeksInYear } from "~/lib/weeks";
-import { getMenu, getMenusInRangeWithUserSelect } from "~/server/queries/menus";
+import { getMenusInRangeWithUserSelect } from "~/server/queries/menus";
 import { getUser } from "~/server/queries/user";
 
 export async function GET() {
@@ -19,7 +19,6 @@ export async function GET() {
 
   const week = getWeeksInYear(2025);
   const data = await getMenusInRangeWithUserSelect(
-    user.id,
     week[7]!.start,
     week[7]!.end,
   );

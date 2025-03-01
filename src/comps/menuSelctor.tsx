@@ -19,8 +19,8 @@ export function MenuSelector() {
     const week = weekCtx.week;
     if (!week) return;
 
-    // Fetch menu
-    // Server query
+    // Fetching of the menu menu
+    // It's a server action that returns menus + choices user already made.
     setIsLoading(true);
     getMenusInRangeWithUserSelect(week.start, week.end)
       .then((x) => setMenus(x))
@@ -29,7 +29,6 @@ export function MenuSelector() {
   }, [weekCtx]);
 
   // Loading indicator
-
   if (isLoading) {
     return (
       <div className="flex flex-1 items-center justify-center">
@@ -41,6 +40,7 @@ export function MenuSelector() {
   return (
     <section className="flex flex-1 justify-center p-6">
       <div className="flex w-[70%] flex-col gap-2">
+        {/* Maps over days in the week */}
         {menus.map((x) => (
           <DayMenu key={x.id} menu={x} />
         ))}
@@ -49,24 +49,26 @@ export function MenuSelector() {
   );
 }
 
+// Menu for each day
 function DayMenu(props: { menu: Menus[number] }) {
-  const [error, dispatch, isPending] = useActionState<
-    { error: string | undefined },
-    FormData
-  >(
-    (prevState: { error: string | undefined }, formData: FormData) =>
+  // Server action error and loading handler
+  type errorMsg = { error: string | undefined };
+  const [error, dispatch, isPending] = useActionState<errorMsg, FormData>(
+    (prevState: errorMsg, formData: FormData) =>
       makeUserChoiceFromForm(prevState, formData, props.menu.id),
     {
       error: undefined,
     },
   );
 
+  // Converts the date to local version (e.g. Monday to Pondělí)
   const weekDay = props.menu.date.toLocaleDateString("cs-CZ", {
     weekday: "long",
   });
   const date = props.menu.date.toLocaleDateString("cs-CZ", {
     dateStyle: "medium",
   });
+
   return (
     <div>
       <h3 className="text-lg font-semibold text-gray-900">
@@ -74,8 +76,10 @@ function DayMenu(props: { menu: Menus[number] }) {
       </h3>
       <p>{props.menu.soup.name}</p>
       <form action={dispatch}>
+        {/* To-go checkbox */}
         <label htmlFor={`${props.menu.id}`}>Sebou </label>
         <input name="togo" type="checkbox" id={`${props.menu.id}`} />
+        {/* Options */}
         <ul className="w-1/2 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900">
           {props.menu.menusToDishes.map((x) => (
             <li
@@ -116,6 +120,7 @@ function DayMenu(props: { menu: Menus[number] }) {
             Obědnat
           </button>
         )}
+        {/* Error message returned by the server action */}
         <span className="font-semibold text-red-700">{error.error ?? ""}</span>
       </form>
     </div>

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/prefer-for-of */
 "use client";
 import { User, UserResponse } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
@@ -89,7 +91,6 @@ export const HomepageComponent = ({ user }: { user: User }) => {
         currentDate.setDate(currentDate.getDate() + 1);
       }
     }
-
     // console.log(temp    )
     const temp2: Array<{
       month: number;
@@ -167,12 +168,19 @@ export const HomepageComponent = ({ user }: { user: User }) => {
   function funcToSetDays(weeks: Array<{ start: string; end: string }>) {
     const days: Array<number> = [];
     if (activeWeek >= weeks.length) setActiveWeek(activeWeek - 1);
-    const sWeek =
+    const startWeek =
       +weeks[activeWeek >= weeks.length ? 0 : activeWeek]!.start.split(".")[0]!;
-    const eWeek =
+    const startMonth =
+      +weeks[activeWeek >= weeks.length ? 0 : activeWeek]!.start.split(".")[1]!;
+    const endWeek =
       +weeks[activeWeek >= weeks.length ? 0 : activeWeek]!.end.split(".")[0]!;
+    const endMonth =
+      +weeks[activeWeek >= weeks.length ? 0 : activeWeek]!.start.split(".")[1]!;
 
-    for (let i = sWeek; i < eWeek + 1; i++) {
+      const n = new Date(date.getFullYear(), activeMonth + 1, startWeek)
+      
+
+    for (let i = startWeek; i < endWeek + 1; i++) {
       days.push(i);
       console.log("pusshing ", i);
     }

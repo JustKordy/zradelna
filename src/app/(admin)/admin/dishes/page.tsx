@@ -2,13 +2,12 @@
 
 import React, { useEffect } from "react";
 import { Spinner } from "~/comps/spinner";
-import { addDish, findDish } from "~/server/queries/dish";
+import { addDish, deleteDish, findDish } from "~/server/queries/dish";
 
 function Page() {
   //refs and usestates
   const inputRefName = React.createRef<HTMLInputElement>();
   const inputRefDes = React.createRef<HTMLInputElement>();
-  const inputRefImg = React.createRef<HTMLInputElement>();
   const [dishes, setDishes] = React.useState<
     {
       id: number;
@@ -41,13 +40,12 @@ function Page() {
 
   //submiting the form
   const submitForm = async () => {
-    if (inputRefName.current && inputRefDes.current && inputRefImg.current) {
+    if (inputRefName.current && inputRefDes.current) {
       try {
         setIsLoading(true);
         const name = inputRefName.current.value;
         const description = inputRefDes.current.value;
-        const imgURL = inputRefImg.current.value;
-        await addDish(name, description, imgURL, isSoup);
+        await addDish(name, description, isSoup);
         setMessage({
           message: "vše je v pořádku, přidané jídlo: " + name,
           state: true,
@@ -78,7 +76,7 @@ function Page() {
             <div className="flex flex-col md:flex-row">
               <input
                 ref={inputRefName}
-                className="mb-5 focus:boder- me-2 w-full rounded-lg border-2 border-orange-400 py-2 ps-1 placeholder:text-orange-400 focus:outline-2 focus:outline-offset-2 focus:outline-orange-400 md:w-1/2"
+                className="focus:boder- mb-5 me-2 w-full rounded-lg border-2 border-orange-400 py-2 ps-1 placeholder:text-orange-400 focus:outline-2 focus:outline-offset-2 focus:outline-orange-400 md:w-1/2"
                 placeholder="Název Jídla"
                 type="text"
               />
@@ -130,7 +128,7 @@ function Page() {
             </div> */}
 
             <div className="flex flex-row">
-              <ul className="w-48 flex rounded-lg border border-gray-200 bg-gray-50 text-sm font-medium text-gray-900">
+              <ul className="flex w-48 rounded-lg border border-gray-200 bg-gray-50 text-sm font-medium text-gray-900">
                 <li className="w-full rounded-t-lg border-gray-200">
                   <div className="flex items-center ps-3">
                     <input
@@ -144,7 +142,7 @@ function Page() {
                     />
                     <label
                       htmlFor="list-radio-license"
-                      className="ms-2 w-full py-3 text-sm font-medium text-gray-900 "
+                      className="ms-2 w-full py-3 text-sm font-medium text-gray-900"
                     >
                       Jídlo
                     </label>
@@ -163,7 +161,7 @@ function Page() {
                     />
                     <label
                       htmlFor="list-radio-id"
-                      className="ms-2 w-full py-3 text-sm font-medium text-gray-900 pe-5"
+                      className="ms-2 w-full py-3 pe-5 text-sm font-medium text-gray-900"
                     >
                       Polévka
                     </label>
@@ -189,7 +187,7 @@ function Page() {
             <div className="flex flex-row">
               <button
                 onClick={submitForm}
-                className="ms-4 bg-white w-full rounded-lg border-2 border-orange-400 p-1 px-10 font-medium text-orange-400 duration-300 ease-in-out hover:bg-orange-400 hover:text-white"
+                className="ms-4 w-full rounded-lg border-2 border-orange-400 bg-white p-1 px-10 font-medium text-orange-400 duration-300 ease-in-out hover:bg-orange-400 hover:text-white"
               >
                 Podvrdit
               </button>
@@ -197,18 +195,48 @@ function Page() {
           </div>
         </div>
       </div>
-      <div className="rouded-lg mx-auto flex flex-col text-center">
-        <div className="m-4 rounded-lg bg-gray-100 py-10">
-          <div className={isLoading ? "hidden" : "mx-auto block flex flex-col"}>
-            {dishes?.map((dish) => (
-              <span key={dish.id}>
-                <div>{dish.name}</div>
-              </span>
-            ))}
-          </div>
-          <div className={isLoading ? "block" : "hidden"}>
-            <Spinner />
-          </div>
+
+      <div className="justify-center justify-items-center">
+        <div className="relative w-1/2 justify-center justify-items-center overflow-x-auto shadow-md sm:rounded-lg">
+          {isLoading && (
+            <div className="flex justify-center py-4">
+              <Spinner />
+            </div>
+          )}
+          <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400 rtl:text-right">
+            <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+              <tr>
+                <th scope="col" className="px-6 py-3">
+                  jméno
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  popis
+                </th>
+                <th scope="col" className="px-6 py-3"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {dishes?.map((dish) => (
+                <tr
+                  key={dish.id}
+                  className="border-b bg-white dark:border-gray-700 dark:bg-gray-800"
+                >
+                  <td className="px-6 py-4">{dish.name}</td>
+                  <td className="px-6 py-4">{dish.description}</td>
+                  <td className="px-6 py-4">
+                    <button
+                      onClick={() => {
+                        deleteDish(dish.id).catch(console.error)
+                      }}
+                      className="text-red-600 hover:underline"
+                    >
+                      delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

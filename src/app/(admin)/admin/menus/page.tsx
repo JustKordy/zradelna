@@ -2,8 +2,12 @@
 import React, { useState } from "react";
 import { findDish } from "~/server/queries/dish";
 import { Spinner } from "~/comps/spinner";
+import { MenuSelector } from "~/comps/menuSelctor";
+import { WeekSelector } from "~/comps/weekSelector";
+import { useWeekContext } from "~/lib/hooks/useWeekContext";
 
 function Page() {
+  const weekCtx = useWeekContext();
   const [searchRes, setSearchRes] = useState<
     {
       id: number;
@@ -30,6 +34,13 @@ function Page() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const inputRef = React.createRef<HTMLInputElement>();
   const inputRefPol = React.createRef<HTMLInputElement>();
+  const daysArr = ["po", "ut", "st", "ct", "pa"];
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
+
+  const handleDayClick = (day: string) => {
+    setSelectedDay(day);
+  };
+
 
   const handleInput = async () => {
     if (inputRef.current && inputRefPol.current) {
@@ -37,7 +48,6 @@ function Page() {
         setIsLoading(true);
         const result = await findDish(
           inputRef.current.value,
-          inputRefPol.current.value === "true",
         );
         setSearchRes(result);
         setIsLoading(false);
@@ -63,9 +73,24 @@ function Page() {
     <div className="">
       <div className="w-full gap-4 p-5">
         <div className="flex w-full flex-col justify-center gap-4 bg-slate-100 md:flex-row">
-          <h1>tydny</h1>
+          <WeekSelector />
         </div>
       </div>
+      <div className="mx-5 flex w-full flex-row items-center justify-center gap-4 bg-gray-100 py-5">
+        {daysArr.map((day) => (
+          <button
+            key={day}
+            onClick={() => handleDayClick(day)}
+            className={`rounded-lg border border-2 border-orange-500 p-3 px-10 duration-300 ease-in-out ${selectedDay === day ? "bg-orange-500 text-white" : "bg-white text-orange-500 hover:bg-orange-500 hover:text-white"}`}
+          >
+            {day.toUpperCase()}
+          </button>
+        ))}
+      </div>
+
+      <button onClick={() => alert(weekCtx.week?.end.toISOString())}>
+        dsfebc
+      </button>
       <div className="w-full gap-4 p-5">
         <div className="mt-10 flex w-full flex-col justify-center gap-4 md:flex-row">
           <div className="flex w-full flex-col items-center justify-center gap-4 bg-slate-100 text-center md:w-full">
@@ -94,13 +119,17 @@ function Page() {
               </div>
             </div>
 
-            <div className=" w-1/2 justify-center rounded-lg bg-gray-300 p-4" >
+            <div className="w-1/2 justify-center rounded-lg bg-gray-300 p-4">
               <div className={isLoading ? "block" : "hidden"}>
                 <Spinner />
               </div>
               {searchRes.map((dish) => (
                 <div
-                  className={isLoading ? "hidden" : "block my-2 flex flex-row justify-center"}  
+                  className={
+                    isLoading
+                      ? "hidden"
+                      : "my-2 block flex flex-row justify-center"
+                  }
                   key={dish.id}
                 >
                   <h2>{dish.name}</h2>

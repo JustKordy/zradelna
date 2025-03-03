@@ -41,8 +41,7 @@ export function MenuSelector() {
 
   return (
     <section className="flex flex-1 justify-center p-6">
-      <div className="flex w-full justify-center flex-col gap-2">
-
+      <div className="flex w-full flex-col justify-center gap-2">
         {menus.map((x) => (
           <DayMenu key={x.id} menu={x} />
         ))}
@@ -51,15 +50,13 @@ export function MenuSelector() {
   );
 }
 
-
 function DayMenu(props: { menu: Menus[number] }) {
-
   type errorMsg = { error: string | undefined };
   const [error, dispatch, isPending] = useActionState<errorMsg, FormData>(
     (prevState: errorMsg, formData: FormData) =>
       makeUserChoiceFromForm(prevState, formData, props.menu.id),
     {
-      error: undefined, 
+      error: undefined,
     },
   );
 
@@ -71,7 +68,7 @@ function DayMenu(props: { menu: Menus[number] }) {
   });
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex items-center justify-center">
       <div className="w-1/2">
         <h3 className="text-lg font-semibold text-gray-900">
           <span>{capitalize(weekDay)}</span> - <span>{date}</span>
@@ -79,8 +76,13 @@ function DayMenu(props: { menu: Menus[number] }) {
         <p>{props.menu.soup.name}</p>
         <form action={dispatch}>
           <label htmlFor={`${props.menu.id}`}>S sebou </label>
-          
-          <input name="togo" type="checkbox" id={`${props.menu.id}`} checked={props.menu.userChoices.length > 0 ? props.menu.userChoices[0].toGo : false}/>
+
+          <input
+            name="togo"
+            type="checkbox"
+            id={`${props.menu.id}`}
+            defaultChecked={props.menu.userChoices[0]?.toGo ?? false}
+          />
           <ul className="rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900">
             {props.menu.menusToDishes.map((x) => (
               <li
@@ -119,9 +121,10 @@ function DayMenu(props: { menu: Menus[number] }) {
               Objednat
             </button>
           )}
-          
 
-          <span className="font-semibold text-red-700">{error.error ?? ""}</span>
+          <span className="font-semibold text-red-700">
+            {error.error ?? ""}
+          </span>
         </form>
       </div>
     </div>

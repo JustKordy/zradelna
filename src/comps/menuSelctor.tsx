@@ -81,7 +81,7 @@ function DayMenu(props: { menu: Menus[number] }) {
             name="togo"
             type="checkbox"
             id={`${props.menu.id}`}
-            defaultChecked={props.menu.userChoices[0]?.toGo ?? false}
+            defaultChecked={props.menu.userChoices[0]?.toGo == true}
           />
           <ul className="rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900">
             {props.menu.menusToDishes.map((x) => (

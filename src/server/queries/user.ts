@@ -5,6 +5,7 @@ import { createClient } from "~/lib/supabase/server";
 import { env } from "~/env";
 import { db } from "../db";
 import { userChoices } from "../db/schema";
+import { and, eq } from "drizzle-orm";
 
 /// AUTH
 export async function getUser() {
@@ -61,6 +62,26 @@ export async function LogInWithAzure() {
   }
 }
 
+export async function updateUserChoice(
+  menuID: number,
+  dishID: number,
+  toGo: boolean
+) {
+  const user = await getUser();
+  if(!user) throw new Error("Unauthorized!")
+
+    console.log(
+      `[INFO]: Updating user choice: User: ${user.id} Menu: ${menuID} Dish: ${dishID}`,
+    );
+    const tryFind = await db.select().from(userChoices).where(and(eq(userChoices.userId, user.id), eq(userChoices.menuId, menuID)))
+    if(tryFind.length === 0) {
+      return false
+    }
+    await db.update(userChoices).set({dishId: dishID, toGo: toGo}).where(and(eq(userChoices.menuId, menuID), eq(userChoices.userId, user.id)))
+    return true
+
+}
+
 // Menu
 export async function makeUserChoice(
   menuId: number,
@@ -91,7 +112,11 @@ export async function makeUserChoiceFromForm(
   const toGo = formData.get("togo");
 
   try {
-    await makeUserChoice(menuId, Number(dishId), Boolean(toGo));
+    const tryUpdate = await updateUserChoice(menuId, Number(dishId), Boolean(toGo))
+    if(!tryUpdate)
+    {
+      await makeUserChoice(menuId, Number(dishId), Boolean(toGo));
+    }
     return { error: undefined };
   } catch (e) {
     console.error("[ERROR]: Failed to make user choice: ", e);

@@ -8,7 +8,28 @@ import { getMenusInRangeWithUserSelect } from "~/server/queries/menus";
 import { Spinner } from "./spinner";
 import { capitalize } from "~/lib/utils";
 import { LoadingButton } from "./loading-button";
-import { makeUserChoiceFromForm } from "~/server/queries/user";
+import { makeUserChoiceFromForm, signOut } from "~/server/queries/user";
+
+const sideBarOptions: Array<{
+  id: number;
+  name: string;
+  icon: string;
+  onClick: () => void;
+}> = [
+  {
+    id: 1,
+    name: "Domů",
+    icon: "fa-solid fa-house",
+    onClick: () => console.log("idk"),
+  },
+  {
+    id: 2,
+    name: "Odhlásit se",
+    icon: "fa-solid fa-sign-out",
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    onClick: () => signOut(),
+  },
+];
 
 type Menus = Awaited<ReturnType<typeof getMenusInRangeWithUserSelect>>;
 
@@ -19,16 +40,18 @@ export function MenuSelector() {
 
   useEffect(() => {
     const week = weekCtx.week;
-    if (!week) return;
+    if (!week) return;  
 
+    
     // Fetching of the menu menu
     // It's a server action that returns menus + choices user already made.
     setIsLoading(true);
     getMenusInRangeWithUserSelect(week.start, week.end)
-      .then((x) => setMenus(x))
-      .then(() => setIsLoading(false))
-      .catch((e) => console.error(e));
+    .then((x) => setMenus(x))
+    .then(() => setIsLoading(false))
+    .catch((e) => console.error(e));
   }, [weekCtx]);
+  
 
   // Loading indicator
   if (isLoading) {
@@ -38,13 +61,21 @@ export function MenuSelector() {
       </div>
     );
   }
+  
+ 
+  return (  
 
-  return (
     <section className="flex flex-1 justify-center p-6">
+       
+
       <div className="flex w-full flex-col justify-center gap-2">
-        {menus.map((x) => (
+        {menus.length > 0 ? menus.map((x) => (
           <DayMenu key={x.id} menu={x} />
-        ))}
+        )) :
+        (
+          <h1 className="text-orange-500 text-xl text-center">Pro tento týden ještě nelze objednat</h1>
+        )
+      }
       </div>
     </section>
   );
@@ -52,6 +83,7 @@ export function MenuSelector() {
 
 function DayMenu(props: { menu: Menus[number] }) {
   type errorMsg = { error: string | undefined };
+  const weekCtx = useWeekContext()
   const [error, dispatch, isPending] = useActionState<errorMsg, FormData>(
     (prevState: errorMsg, formData: FormData) =>
       makeUserChoiceFromForm(prevState, formData, props.menu.id),
@@ -67,9 +99,13 @@ function DayMenu(props: { menu: Menus[number] }) {
     dateStyle: "medium",
   });
 
+
+
   return (
+    <>
+    
     <div className="flex items-center justify-center">
-      <div className="w-1/2">
+      <div className="w-full md:w-1/2">
         <h3 className="text-lg font-semibold text-gray-900">
           <span>{capitalize(weekDay)}</span> - <span>{date}</span>
         </h3>
@@ -128,5 +164,6 @@ function DayMenu(props: { menu: Menus[number] }) {
         </form>
       </div>
     </div>
+    </>
   );
 }

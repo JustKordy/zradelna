@@ -120,6 +120,6 @@ export async function makeUserChoiceFromForm(
     return { error: undefined };
   } catch (e) {
     console.error("[ERROR]: Failed to make user choice: ", e);
-    return { error: "Something wen wrong" };
+    return { error: "Something went wrong" };
   }
 }

@@ -40,16 +40,16 @@ function WeekButton(props: {
   return (
     <button
       onClick={props.onClick}
-      className={`flex h-full w-[200px] items-center justify-center gap-1 rounded-lg ${props.selected ? "bg-orange-400 text-white" : "border-2 border-orange-400 bg-white text-orange-400 hover:bg-orange-100"}`}
+      className={`flex h-full w-[200px] items-center justify-center md:flex-row flex-col gap-0 md:gap-1 rounded-lg ${props.selected ? "bg-orange-400 text-white" : "border-2 border-orange-400 bg-white text-orange-400 hover:bg-orange-100"}`}
     >
-      <span className="font-bold">
+      <span className="font-bold text-xs md:text-lg">
         {props.week.start.toLocaleDateString("cs-CZ", {
           day: "numeric",
           month: "numeric",
         })}
       </span>
       -
-      <span className="font-bold">
+      <span className="font-bold text-xs md:text-lg">
         {props.week.end.toLocaleDateString("cs-CZ", {
           day: "numeric",
           month: "numeric",

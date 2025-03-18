@@ -27,3 +27,4 @@
 - [x] Here or To-Go
 - [ ] Admin Role
 - [ ] Drizzle kit works only with posgres port :5432, but supabase doc's recommend :6543 for serverless. (Fix this before prod)
+- [ ] Add amount to orders

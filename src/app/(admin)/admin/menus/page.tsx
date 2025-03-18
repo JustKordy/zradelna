@@ -1,10 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import { findDish } from "~/server/queries/dish";
 import { Spinner } from "~/comps/spinner";
-import { MenuSelector } from "~/comps/menuSelctor";
 import { WeekSelector } from "~/comps/weekSelector";
 import { useWeekContext } from "~/lib/hooks/useWeekContext";
+import { type Week } from "~/types/week";
 
 function Page() {
   const weekCtx = useWeekContext();
@@ -35,20 +34,55 @@ function Page() {
   const inputRef = React.createRef<HTMLInputElement>();
   const inputRefPol = React.createRef<HTMLInputElement>();
   const daysArr = ["po", "ut", "st", "ct", "pa"];
-  const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  const [selectedDay, setSelectedDay] = useState<string | null>("po");
+  const [weekState, setWeekState] = useState<string | null>();
+
+  const handleSubmit = async () => {
+    if (!selectedDay) {
+      console.error("Nevybrán žádný den!");
+      return;
+    }
+  
+    if (searchArr.length === 0) {
+      console.error("Nebyla vybrána žádná jídla!");
+      return;
+    }
+  
+    try {
+      const dishIds: number[] = searchArr.map((x) => x.id);
+  
+      // TODO: Musíš získat menuId pro daný týden a den
+      const menuId: number | null = await fetchMenuId(selectedDay, weekCtx.week);
+  
+      if (!menuId) {
+        console.error("Nepodařilo se získat menuId!");
+        return;
+      }
+
+  
+      console.log("Položky menu byly úspěšně přidány:", res);
+      setSearchArr([]); // Vyčištění po úspěšném přidání
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Chyba při přidávání položek do menu:", error.message);
+      } else {
+        console.error("Neznámá chyba při přidávání položek do menu:", error);
+      }
+    }
+  };
+  
+
 
   const handleDayClick = (day: string) => {
     setSelectedDay(day);
+    setWeekState(day);
   };
-
 
   const handleInput = async () => {
     if (inputRef.current && inputRefPol.current) {
       try {
         setIsLoading(true);
-        const result = await findDish(
-          inputRef.current.value,
-        );
+        const result = await findDish(inputRef.current.value);
         setSearchRes(result);
         setIsLoading(false);
       } catch (e) {
@@ -88,9 +122,11 @@ function Page() {
         ))}
       </div>
 
-      <button onClick={() => alert(weekCtx.week?.end.toISOString())}>
-        dsfebc
-      </button>
+      <p>
+        {weekCtx.week?.end.toISOString()}
+        {weekState} 
+        
+      </p>
       <div className="w-full gap-4 p-5">
         <div className="mt-10 flex w-full flex-col justify-center gap-4 md:flex-row">
           <div className="flex w-full flex-col items-center justify-center gap-4 bg-slate-100 text-center md:w-full">
@@ -109,7 +145,7 @@ function Page() {
                 />
               </div>
               <div className="flex flex-row justify-center gap-4">
-                <input
+                <input  
                   ref={inputRefPol}
                   onChange={handleInputPol}
                   className="mb-10 me-2 w-full rounded-lg border-2 border-orange-400 py-2 ps-1 placeholder:text-orange-400 focus:outline-2 focus:outline-offset-2 focus:outline-orange-400"
@@ -138,6 +174,7 @@ function Page() {
                     onClick={() => {
                       if (!searchArr.some((item) => item.id === dish.id)) {
                         setSearchArr([...searchArr, dish]);
+                        console.log(dish)
                       }
                     }}
                     className="ms-4 rounded-lg border-2 border-orange-500 p-1 px-3 font-medium text-orange-500 duration-300 ease-in-out hover:bg-orange-500 hover:text-white"
@@ -159,7 +196,7 @@ function Page() {
               ))}
             </div>
             <div className="mb-5 flex flex-row">
-              <button className="ms-4 rounded-lg border-2 border-orange-500 p-1 px-3 font-medium text-orange-500 duration-300 ease-in-out hover:bg-orange-500 hover:text-white">
+              <button onClick={handleSubmit} className="ms-4 rounded-lg border-2 border-orange-500 p-1 px-3 font-medium text-orange-500 duration-300 ease-in-out hover:bg-orange-500 hover:text-white">
                 Podvrdit
               </button>
               <button
@@ -178,4 +215,26 @@ function Page() {
   );
 }
 
+async function fetchMenuId(selectedDay: string, week: Week | undefined): Promise<number | null> {
+  if (!week) {
+    console.error("Week context is undefined.");
+    return null;
+  }
+
+  try {
+    const response = await fetch(`/api/menus?day=${selectedDay}&weekStart=${week.start.toISOString()}&weekEnd=${week.end.toISOString()}`);
+    if (!response.ok) {
+      console.error("Failed to fetch menu ID:", response.statusText);
+      return null;
+    }
+
+    const data = (await response.json()) as { menuId: number | null };
+    return data.menuId ?? null;
+  } catch (error) {
+    console.error("Error fetching menu ID:", error);
+    return null;
+  }
+}
+
+// ✅ Ujisti se, že komponenta je exportována **až na konci**
 export default Page;

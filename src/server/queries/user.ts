@@ -63,13 +63,15 @@ export async function LogInWithAzure() {
 }
 
 // Menu
-export async function makeUserChoice(menuId: number, dishId: number) {
+export async function makeUserChoice(menuId: number, dish: string, toGo: boolean, amount = 1) {
   const user = await getUser();
   if (!user) throw new Error("Unauthorized");
 
   return db.insert(userChoices).values({
     userId: user.id,
     menuId,
-    dishId,
+    toGo,
+    amount,
+    dish,
   });
 }

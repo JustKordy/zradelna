@@ -1,12 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { Spinner } from "~/comps/spinner";
-import { WeekSelector } from "~/comps/weekSelector";
-import { useWeekContext } from "~/lib/hooks/useWeekContext";
-import { type Week } from "~/types/week";
 
 function Page() {
-  const weekCtx = useWeekContext();
   const [searchRes, setSearchRes] = useState<
     {
       id: number;
@@ -33,56 +29,15 @@ function Page() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const inputRef = React.createRef<HTMLInputElement>();
   const inputRefPol = React.createRef<HTMLInputElement>();
-  const daysArr = ["po", "ut", "st", "ct", "pa"];
-  const [selectedDay, setSelectedDay] = useState<string | null>("po");
-  const [weekState, setWeekState] = useState<string | null>();
-
-  const handleSubmit = async () => {
-    if (!selectedDay) {
-      console.error("Nevybrán žádný den!");
-      return;
-    }
-  
-    if (searchArr.length === 0) {
-      console.error("Nebyla vybrána žádná jídla!");
-      return;
-    }
-  
-    try {
-      const dishIds: number[] = searchArr.map((x) => x.id);
-  
-      // TODO: Musíš získat menuId pro daný týden a den
-      const menuId: number | null = await fetchMenuId(selectedDay, weekCtx.week);
-  
-      if (!menuId) {
-        console.error("Nepodařilo se získat menuId!");
-        return;
-      }
-
-  
-      console.log("Položky menu byly úspěšně přidány:", res);
-      setSearchArr([]); // Vyčištění po úspěšném přidání
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error("Chyba při přidávání položek do menu:", error.message);
-      } else {
-        console.error("Neznámá chyba při přidávání položek do menu:", error);
-      }
-    }
-  };
-  
-
-
-  const handleDayClick = (day: string) => {
-    setSelectedDay(day);
-    setWeekState(day);
-  };
 
   const handleInput = async () => {
     if (inputRef.current && inputRefPol.current) {
       try {
         setIsLoading(true);
-        const result = await findDish(inputRef.current.value);
+        const result = await findDish(
+          inputRef.current.value,
+          inputRefPol.current.value === "true",
+        );
         setSearchRes(result);
         setIsLoading(false);
       } catch (e) {
@@ -107,26 +62,9 @@ function Page() {
     <div className="">
       <div className="w-full gap-4 p-5">
         <div className="flex w-full flex-col justify-center gap-4 bg-slate-100 md:flex-row">
-          <WeekSelector />
+          <h1>tydny</h1>
         </div>
       </div>
-      <div className="mx-5 flex w-full flex-row items-center justify-center gap-4 bg-gray-100 py-5">
-        {daysArr.map((day) => (
-          <button
-            key={day}
-            onClick={() => handleDayClick(day)}
-            className={`rounded-lg border border-2 border-orange-500 p-3 px-10 duration-300 ease-in-out ${selectedDay === day ? "bg-orange-500 text-white" : "bg-white text-orange-500 hover:bg-orange-500 hover:text-white"}`}
-          >
-            {day.toUpperCase()}
-          </button>
-        ))}
-      </div>
-
-      <p>
-        {weekCtx.week?.end.toISOString()}
-        {weekState} 
-        
-      </p>
       <div className="w-full gap-4 p-5">
         <div className="mt-10 flex w-full flex-col justify-center gap-4 md:flex-row">
           <div className="flex w-full flex-col items-center justify-center gap-4 bg-slate-100 text-center md:w-full">
@@ -155,17 +93,13 @@ function Page() {
               </div>
             </div>
 
-            <div className="w-1/2 justify-center rounded-lg bg-gray-300 p-4">
+            <div className=" w-1/2 justify-center rounded-lg bg-gray-300 p-4" >
               <div className={isLoading ? "block" : "hidden"}>
                 <Spinner />
               </div>
               {searchRes.map((dish) => (
                 <div
-                  className={
-                    isLoading
-                      ? "hidden"
-                      : "my-2 block flex flex-row justify-center"
-                  }
+                  className={isLoading ? "hidden" : "block my-2 flex flex-row justify-center"}  
                   key={dish.id}
                 >
                   <h2>{dish.name}</h2>

@@ -2,7 +2,6 @@ import "~/styles/globals.css";
 
 import { Montserrat } from "next/font/google";
 import { type Metadata } from "next";
-import { WeekContextProvider } from "~/lib/providers/weekStoreProvider";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -32,11 +31,7 @@ export default function RootLayout({
         <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
         <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
       </head>
-      <body>
-       <WeekContextProvider>
-          {children}
-        </WeekContextProvider>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

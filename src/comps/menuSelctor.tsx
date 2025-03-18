@@ -153,6 +153,7 @@ function DayMenu(props: { menu: Menus[number] }) {
             <button
               type="submit"
               className="mb-2 me-2 rounded-lg bg-orange-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-orange-600 focus:ring-4 focus:ring-orange-300"
+              onClick={() => window.location.reload()}
             >
               Objednat
             </button>

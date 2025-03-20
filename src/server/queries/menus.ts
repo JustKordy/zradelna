@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "~/server/db";
-import { menus } from "~/server/db/schema";
+import { menus, userChoices } from "~/server/db/schema";
 import { between, eq } from "drizzle-orm";
 import { getUser } from "./user";
 
@@ -27,7 +27,9 @@ export async function getMenusInRangeWithUserSelect(from: Date, to: Date) {
   return db.query.menus.findMany({
     where: between(menus.date, from, to),
     with: {
-      menusToUserChoices: true,
+      menusToUserChoices: {
+        where: eq(userChoices.userId, user.id),
+      },
     },
   });
 }

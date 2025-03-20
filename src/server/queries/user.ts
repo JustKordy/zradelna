@@ -111,12 +111,14 @@ export async function makeUserChoice(
 // Define a Zod schema for your form data
 const UserChoiceFormSchema = z.object({
   dish: z.string().min(1, { message: "Dish is required" }),
-  togo: z.enum(["true", "false"], {
-    errorMap: () => ({ message: `toGo must be "true" or "false"` }),
-  }),
+  togo: z
+    .enum(["on", "off"])
+    .transform((val) => val === "on")
+    .default("off"),
   amount: z.coerce
     .number()
-    .min(1, { message: "Amount must be greater than 0" }),
+    .min(1, { message: "Amount must be greater than 0" })
+    .default(1),
 });
 
 export async function makeUserChoiceFromForm(
@@ -126,22 +128,26 @@ export async function makeUserChoiceFromForm(
 ): Promise<{ error: string | undefined }> {
   try {
     // Parse the form data
-    const parsedData = UserChoiceFormSchema.parse(formData.keys());
+    const parsedData = UserChoiceFormSchema.parse({
+      dish: formData.get("dish"),
+      togo: formData.get("togo"),
+      amount: formData.get("amount"),
+    });
 
     // Make the db call
     await makeUserChoice(
       menuId,
       parsedData.dish,
-      parsedData.togo === "true",
+      parsedData.togo,
       parsedData.amount,
     );
 
     return { error: undefined };
   } catch (error) {
+    console.error("[ERROR]: Failed to make user choice: ", error);
     if (error instanceof z.ZodError) {
       return { error: error.errors[0]!.message };
     }
-    console.error("[ERROR]: Failed to make user choice: ", error);
     return { error: "Something went wrong" };
   }
 }

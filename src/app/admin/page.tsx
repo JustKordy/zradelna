@@ -16,19 +16,11 @@ function page() {
             <div className="flex flex-col gap-4 md:flex-row">
               <button
                 onClick={() => {
-                  redirect("/admin/menus");
+                  redirect("/admin/menu");
                 }}
                 className="rounded-lg bg-orange-400 p-5 text-4xl text-slate-50 duration-300 ease-in-out hover:-translate-y-2 hover:bg-orange-300 md:p-4 md:text-xl"
               >
                 Menu
-              </button>
-              <button
-                onClick={() => {
-                  redirect("/admin/dishes");
-                }}
-                className="rounded-lg bg-orange-400 p-5 text-4xl text-slate-50 duration-300 ease-in-out hover:-translate-y-2 hover:bg-orange-300 md:p-4 md:text-xl"
-              >
-                Jídla
               </button>
               <button
                 onClick={() => {

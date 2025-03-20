@@ -9,10 +9,8 @@ import {
   integer,
   pgSchema,
   pgTableCreator,
-  primaryKey,
-  text,
   timestamp,
-  uniqueIndex,
+  unique,
   varchar,
 } from "drizzle-orm/pg-core";
 
@@ -53,8 +51,9 @@ export const userChoices = createTable(
     menuId: integer("menu_id")
       .references(() => menus.id)
       .notNull(),
-    dish: varchar("dish", { length: 255 }).notNull(),
+    dish: varchar("dish", { length: 255 }).default("").notNull(),
     amount: integer("amount").default(1).notNull(),
+    toGo: boolean("to-go").default(false).notNull(),
 
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
@@ -67,6 +66,8 @@ export const userChoices = createTable(
   (table) => [
     index("user_id_idx").on(table.userId),
     index("menu_id_idx").on(table.menuId),
+    // Makes sure that each record has an unique userId-menuId pair
+    unique("user_id_menu_id_unique").on(table.userId, table.menuId),
   ],
 );
 
@@ -77,6 +78,6 @@ export const userChoicesR = relations(userChoices, ({ one }) => ({
   }),
 }));
 
-export const menusR = relations(userChoices, ({ many }) => ({
-  userChoicesToMenus: many(userChoices),
+export const menusR = relations(menus, ({ many }) => ({
+  menusToUserChoices: many(userChoices),
 }));

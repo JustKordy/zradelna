@@ -8,13 +8,13 @@ import { dishes } from "~/server/db/schema";
 export async function addDish(
   name: string,
   description?: string,
-  imgURL?: string,
+  isSoup = false,
 ) {
   console.log("[INFO][DB]: Adding dish: ", name);
   return db.insert(dishes).values({
     name,
     description,
-    imgURL,
+    isSoup,
   });
 }
 
@@ -26,4 +26,12 @@ export async function findDish(query: string, soup = false) {
     .from(dishes)
     .where(and(ilike(dishes.name, `%${query}%`), eq(dishes.isSoup, soup)))
     .limit(50);
+}
+
+//DELETE
+export async function deleteDish(id: number) {
+  console.log("[INFO][DB]: Deleting dish: ", id);
+  return db
+  .delete(dishes)
+  .where(eq(dishes.id, id));
 }

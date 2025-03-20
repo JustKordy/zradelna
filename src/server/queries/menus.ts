@@ -20,6 +20,11 @@ export async function getMenu(date: Date) {
   });
 }
 
+// Get count of user choices per mennu
+export async function getUserChoicesCount(date: Date) {
+  return 5;
+}
+
 // Gets all menus in range
 export async function getMenusInRange(from: Date, to: Date) {
   return db.query.menus.findMany({
@@ -76,3 +81,4 @@ export async function addMenuItems(menuId: number, dishIds: number[]) {
 
   return db.insert(menuDishes).values(batch);
 }
+

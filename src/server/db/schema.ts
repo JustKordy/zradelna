@@ -3,6 +3,7 @@
 
 import { relations, sql } from "drizzle-orm";
 import {
+  boolean,
   date,
   index,
   integer,
@@ -51,6 +52,7 @@ export const userChoices = createTable(
       .notNull(),
     dish: varchar("dish", { length: 255 }).default("").notNull(),
     amount: integer("amount").default(1).notNull(),
+    toGo: boolean("to-go").default(false).notNull(),
 
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)

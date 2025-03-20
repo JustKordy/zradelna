@@ -5,6 +5,7 @@ import { createClient } from "~/lib/supabase/server";
 import { env } from "~/env";
 import { db } from "../db";
 import { userChoices } from "../db/schema";
+import { z } from "zod";
 import { and, eq } from "drizzle-orm";
 
 /// AUTH
@@ -65,54 +66,82 @@ export async function LogInWithAzure() {
 // Menu
 export async function makeUserChoice(
   menuId: number,
-  dishId: number,
-  toGo: boolean,
-  amount: number,
+  dish: string,
+  toGo = false,
+  amount = 1,
 ) {
   const user = await getUser();
   if (!user) throw new Error("Unauthorized");
 
   console.log(
-    `[INFO]: Creating user choice: User: ${user.id} Menu: ${menuId} Dish: ${dishId}`,
+    `[INFO]: Creating/Updating user choice: User: ${user.id} Menu: ${menuId}`,
   );
-  return db.insert(userChoices).values({
-    userId: user.id,
-    menuId,
-    dishId,
-    toGo,
-    amount,
-  });
+  console.log("JSEAIFEKGJNBKGFELAc ", dish);
+
+  try {
+    await db
+      .insert(userChoices)
+      .values({
+        menuId,
+        dish,
+        toGo,
+        amount,
+        userId: user.id,
+      })
+      // Doing update if exists
+      .onConflictDoUpdate({
+        target: [userChoices.userId, userChoices.menuId],
+        set: {
+          dish,
+          toGo,
+          amount,
+          updatedAt: new Date(),
+        },
+        where: and(
+          eq(userChoices.userId, user.id),
+          eq(userChoices.menuId, menuId),
+        ),
+      });
+  } catch (error) {
+    console.error("Failed to create/update user choice:", error);
+    throw error;
+  }
 }
+
+// Define a Zod schema for your form data
+const UserChoiceFormSchema = z.object({
+  dish: z.string().min(1, { message: "Dish is required" }),
+  togo: z.enum(["true", "false"], {
+    errorMap: () => ({ message: `toGo must be "true" or "false"` }),
+  }),
+  amount: z.coerce
+    .number()
+    .min(1, { message: "Amount must be greater than 0" }),
+});
 
 export async function makeUserChoiceFromForm(
   prevState: unknown,
   formData: FormData,
   menuId: number,
 ): Promise<{ error: string | undefined }> {
-  const dishId = formData.get("dish");
-  if (!dishId) return { error: "Provide dish id" };
-  const toGo = formData.get("togo");
-  const amount = formData.get("amount");
-
   try {
-    const tryUpdate = await updateUserChoice(
+    // Parse the form data
+    const parsedData = UserChoiceFormSchema.parse(formData.keys());
+
+    // Make the db call
+    await makeUserChoice(
       menuId,
-      Number(dishId),
-      Boolean(toGo),
-      Number(amount),
+      parsedData.dish,
+      parsedData.togo === "true",
+      parsedData.amount,
     );
-    if (!tryUpdate) {
-      await makeUserChoice(
-        menuId,
-        Number(dishId),
-        Boolean(toGo),
-        Number(amount),
-      );
-    }
+
     return { error: undefined };
-  } catch (e) {
-    console.error("[ERROR]: Failed to make user choice: ", e);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return { error: error.errors[0]!.message };
+    }
+    console.error("[ERROR]: Failed to make user choice: ", error);
     return { error: "Something went wrong" };
   }
 }
-

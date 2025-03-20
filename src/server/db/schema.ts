@@ -10,6 +10,7 @@ import {
   pgSchema,
   pgTableCreator,
   timestamp,
+  unique,
   varchar,
 } from "drizzle-orm/pg-core";
 
@@ -65,6 +66,8 @@ export const userChoices = createTable(
   (table) => [
     index("user_id_idx").on(table.userId),
     index("menu_id_idx").on(table.menuId),
+    // Makes sure that each records has an unique userId-menuId pair
+    unique("user_id_menu_id_unique").on(table.userId, table.menuId),
   ],
 );
 

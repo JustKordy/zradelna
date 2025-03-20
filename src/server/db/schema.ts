@@ -9,10 +9,8 @@ import {
   integer,
   pgSchema,
   pgTableCreator,
-  primaryKey,
-  text,
   timestamp,
-  uniqueIndex,
+  unique,
   varchar,
 } from "drizzle-orm/pg-core";
 
@@ -26,37 +24,13 @@ export const appSchema = pgSchema("app");
 
 export const createTable = pgTableCreator((name) => `zradelna_${name}`);
 
-export const dishes = createTable(
-  "dishes",
-  {
-    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    name: varchar("name", { length: 255 }).unique().notNull(),
-    isSoup: boolean("is_soup").default(false).notNull(),
-    description: text("description"),
-    imgURL: varchar("img_url", { length: 1024 }),
-    createdAt: timestamp("created_at")
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updated_at")
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull()
-      .$onUpdate(() => new Date()),
-  },
-  (table) => [
-    index("name_idx").on(table.name),
-    index("is_soup_idx").on(table.isSoup),
-  ],
-);
-
-// Menu for a day
 export const menus = createTable(
   "menus",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     date: date("date", { mode: "date" }).unique().notNull(),
-    soupId: integer("soup_id")
-      .references(() => dishes.id)
-      .notNull(),
+    soup: varchar("soup", { length: 255 }).notNull(),
+    dishes: varchar("dishes", { length: 255 }).array().notNull(),
 
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
@@ -69,61 +43,17 @@ export const menus = createTable(
   (table) => [index("date_idx").on(table.date)],
 );
 
-// Define the join table for menus and dishes
-export const menuDishes = createTable(
-  "menu_dishes",
-  {
-    menuId: integer("menu_id")
-      .notNull()
-      .references(() => menus.id),
-    dishId: integer("dish_id")
-      .notNull()
-      .references(() => dishes.id),
-  },
-  (table) => [primaryKey({ columns: [table.menuId, table.dishId] })],
-);
-
-export const menusR = relations(menus, ({ many, one }) => ({
-  menusToDishes: many(menuDishes),
-  userChoices: many(userChoices),
-  soup: one(dishes, {
-    fields: [menus.soupId],
-    references: [dishes.id],
-  }),
-}));
-export const dishesR = relations(dishes, ({ many }) => ({
-  dishesToMenus: many(menuDishes),
-  userChoices: many(userChoices),
-  soups: many(menus),
-}));
-export const menuDishesR = relations(menuDishes, ({ one }) => ({
-  menus: one(menus, {
-    fields: [menuDishes.menuId],
-    references: [menus.id],
-  }),
-  dishes: one(dishes, {
-    fields: [menuDishes.dishId],
-    references: [dishes.id],
-  }),
-}));
-
-// User's choice
 export const userChoices = createTable(
-  "user_choice",
+  "user_choices",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    userId: varchar("user_id", { length: 255 }).notNull(),
+    userId: varchar("user_id", { length: 128 }).notNull(),
     menuId: integer("menu_id")
       .references(() => menus.id)
       .notNull(),
-    dishId: integer("dish_id")
-      .references(() => dishes.id)
-      .notNull(),
-    toGo: boolean("to_go").default(false).notNull(),
-
-    amount: integer("amount")
-      .default(1)
-      .notNull(),
+    dish: varchar("dish", { length: 255 }).default("").notNull(),
+    amount: integer("amount").default(1).notNull(),
+    toGo: boolean("to-go").default(false).notNull(),
 
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
@@ -132,22 +62,22 @@ export const userChoices = createTable(
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull()
       .$onUpdate(() => new Date()),
-
   },
   (table) => [
     index("user_id_idx").on(table.userId),
     index("menu_id_idx").on(table.menuId),
-    uniqueIndex("user_id_to_menu_id_idx").on(table.userId, table.menuId),
+    // Makes sure that each record has an unique userId-menuId pair
+    unique("user_id_menu_id_unique").on(table.userId, table.menuId),
   ],
 );
 
-export const userChoiceR = relations(userChoices, ({ one }) => ({
-  dish: one(dishes, {
-    fields: [userChoices.dishId],
-    references: [dishes.id],
-  }),
-  menu: one(menus, {
+export const userChoicesR = relations(userChoices, ({ one }) => ({
+  userChoicesToMenus: one(menus, {
     fields: [userChoices.menuId],
     references: [menus.id],
   }),
+}));
+
+export const menusR = relations(menus, ({ many }) => ({
+  menusToUserChoices: many(userChoices),
 }));

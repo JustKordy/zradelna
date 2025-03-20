@@ -6,6 +6,7 @@ import { getUser } from "~/server/queries/user";
 export default async function Page() {
   const user = await getUser();
   if (!user) redirect("/auth/login");
+
   return (
     <>
       <WeekSelector />

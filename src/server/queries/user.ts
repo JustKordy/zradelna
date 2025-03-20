@@ -62,48 +62,12 @@ export async function LogInWithAzure() {
   }
 }
 
-export async function updateUserChoice(
-  menuID: number,
-  dishID: number,
-  toGo: boolean,
-  amount: number
-) {
-  const user = await getUser();
-  if(!user) throw new Error("Unauthorized!")
-
-    console.log(
-      `[INFO]: Updating user choice: User: ${user.id} Menu: ${menuID} Dish: ${dishID}`,
-    );
-    const tryFind = await db.select().from(userChoices).where(and(eq(userChoices.userId, user.id), eq(userChoices.menuId, menuID)))
-    if(tryFind.length === 0) {
-      return false
-    }
-    await db.update(userChoices).set({dishId: dishID, toGo: toGo, amount: amount}).where(and(eq(userChoices.menuId, menuID), eq(userChoices.userId, user.id)))
-    return true
-
-}
-
-export async function removeUserChoice( menuID: number){
-  const user = await getUser();
-  if(!user) throw new Error("Unauthorized!")
-  if(!menuID)
-  {
-    return false
-  }
-  console.log(
-    `[INFO]: Removing user choice: User: ${user.id} Menu: ${menuID}`,
-  );
-  await db.delete(userChoices).where(eq(userChoices.menuId, menuID));
-  return true
-}
-
-
 // Menu
 export async function makeUserChoice(
   menuId: number,
   dishId: number,
   toGo: boolean,
-  amount: number
+  amount: number,
 ) {
   const user = await getUser();
   if (!user) throw new Error("Unauthorized");
@@ -116,7 +80,7 @@ export async function makeUserChoice(
     menuId,
     dishId,
     toGo,
-    amount
+    amount,
   });
 }
 
@@ -128,13 +92,22 @@ export async function makeUserChoiceFromForm(
   const dishId = formData.get("dish");
   if (!dishId) return { error: "Provide dish id" };
   const toGo = formData.get("togo");
-  const amount = formData.get("amount")
+  const amount = formData.get("amount");
 
   try {
-    const tryUpdate = await updateUserChoice(menuId, Number(dishId), Boolean(toGo), Number(amount))
-    if(!tryUpdate)
-    {
-      await makeUserChoice(menuId, Number(dishId), Boolean(toGo), Number(amount));
+    const tryUpdate = await updateUserChoice(
+      menuId,
+      Number(dishId),
+      Boolean(toGo),
+      Number(amount),
+    );
+    if (!tryUpdate) {
+      await makeUserChoice(
+        menuId,
+        Number(dishId),
+        Boolean(toGo),
+        Number(amount),
+      );
     }
     return { error: undefined };
   } catch (e) {
@@ -142,3 +115,4 @@ export async function makeUserChoiceFromForm(
     return { error: "Something went wrong" };
   }
 }
+

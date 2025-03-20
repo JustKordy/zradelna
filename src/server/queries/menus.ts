@@ -9,14 +9,6 @@ import { getUser } from "./user";
 export async function getMenu(date: Date) {
   return db.query.menus.findFirst({
     where: eq(menus.date, date),
-    with: {
-      soup: true,
-      menusToDishes: {
-        with: {
-          dishes: true,
-        },
-      },
-    },
   });
 }
 
@@ -81,4 +73,3 @@ export async function addMenuItems(menuId: number, dishIds: number[]) {
 
   return db.insert(menuDishes).values(batch);
 }
-

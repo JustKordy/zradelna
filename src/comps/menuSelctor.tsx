@@ -9,6 +9,8 @@ import { Spinner } from "./spinner";
 import { capitalize } from "~/lib/utils";
 import { LoadingButton } from "./loading-button";
 import { makeUserChoiceFromForm, signOut } from "~/server/queries/user";
+import { removeUserChoice } from "~/server/queries/user";
+import { useRouter } from "next/router";
 
 const sideBarOptions: Array<{
   id: number;
@@ -16,27 +18,35 @@ const sideBarOptions: Array<{
   icon: string;
   onClick: () => void;
 }> = [
-  {
-    id: 1,
-    name: "Domů",
-    icon: "fa-solid fa-house",
-    onClick: () => console.log("idk"),
-  },
-  {
-    id: 2,
-    name: "Odhlásit se",
-    icon: "fa-solid fa-sign-out",
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    onClick: () => signOut(),
-  },
-];
+    {
+      id: 1,
+      name: "Domů",
+      icon: "fa-solid fa-house",
+      onClick: () => console.log("idk"),
+    },
+    {
+      id: 2,
+      name: "Odhlásit se",
+      icon: "fa-solid fa-sign-out",
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      onClick: () => signOut(),
+    },
+  ];
+
 
 type Menus = Awaited<ReturnType<typeof getMenusInRangeWithUserSelect>>;
 
+
+
+
+
+
 export function MenuSelector() {
+
   const weekCtx = useWeekContext();
   const [menus, setMenus] = useState<Menus>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [toggle, setToggle] = useState<boolean>();
 
   useEffect(() => {
     const week = weekCtx.week;
@@ -49,7 +59,13 @@ export function MenuSelector() {
       .then((x) => setMenus(x))
       .then(() => setIsLoading(false))
       .catch((e) => console.error(e));
-  }, [weekCtx]);
+
+  }, [weekCtx, toggle]);
+
+  const toggleFunction = () => {
+    setToggle(!toggle);
+  }
+
 
   // Loading indicator
   if (isLoading) {
@@ -60,8 +76,12 @@ export function MenuSelector() {
     );
   }
 
+
+  return (
+
   return (
     <section className="flex flex-1 justify-center p-6">
+
       <div className="flex w-full flex-col justify-center gap-2">
         {menus.length > 0 ? (
           menus.map((x) => <DayMenu key={x.id} menu={x} />)
@@ -70,12 +90,14 @@ export function MenuSelector() {
             Pro tento týden ještě nelze objednat
           </h1>
         )}
+
       </div>
     </section>
   );
 }
 
-function DayMenu(props: { menu: Menus[number] }) {
+function DayMenu(props: { menu: Menus[number], toggleFunc: () => void }) {
+
   type errorMsg = { error: string | undefined };
   const [error, dispatch, isPending] = useActionState<errorMsg, FormData>(
     (prevState: errorMsg, formData: FormData) =>
@@ -109,6 +131,7 @@ function DayMenu(props: { menu: Menus[number] }) {
               id={`${props.menu.id}`}
               defaultChecked={props.menu.userChoices[0]?.toGo == true}
             />
+
             <ul className="rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900">
               {props.menu.menusToDishes.map((x) => (
                 <li
@@ -147,7 +170,7 @@ function DayMenu(props: { menu: Menus[number] }) {
               >
                 Objednat
               </button>
-            )}
+
 
             <span className="font-semibold text-red-700">
               {error.error ?? ""}

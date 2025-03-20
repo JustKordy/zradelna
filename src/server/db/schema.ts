@@ -121,6 +121,10 @@ export const userChoices = createTable(
       .notNull(),
     toGo: boolean("to_go").default(false).notNull(),
 
+    amount: integer("amount")
+      .default(1)
+      .notNull(),
+
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -128,6 +132,7 @@ export const userChoices = createTable(
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull()
       .$onUpdate(() => new Date()),
+
   },
   (table) => [
     index("user_id_idx").on(table.userId),

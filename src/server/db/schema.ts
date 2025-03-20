@@ -3,16 +3,12 @@
 
 import { relations, sql } from "drizzle-orm";
 import {
-  boolean,
   date,
   index,
   integer,
   pgSchema,
   pgTableCreator,
-  primaryKey,
-  text,
   timestamp,
-  uniqueIndex,
   varchar,
 } from "drizzle-orm/pg-core";
 

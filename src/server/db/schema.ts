@@ -49,7 +49,7 @@ export const userChoices = createTable(
     menuId: integer("menu_id")
       .references(() => menus.id)
       .notNull(),
-    dish: varchar("dish", { length: 255 }).notNull(),
+    dish: varchar("dish", { length: 255 }).default("").notNull(),
     amount: integer("amount").default(1).notNull(),
 
     createdAt: timestamp("created_at")
@@ -73,6 +73,6 @@ export const userChoicesR = relations(userChoices, ({ one }) => ({
   }),
 }));
 
-export const menusR = relations(userChoices, ({ many }) => ({
-  userChoicesToMenus: many(userChoices),
+export const menusR = relations(menus, ({ many }) => ({
+  menusToUserChoices: many(userChoices),
 }));

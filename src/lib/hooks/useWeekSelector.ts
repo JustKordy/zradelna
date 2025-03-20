@@ -20,6 +20,8 @@ const MONTHS = [
 
 // Finds to which week does the `date` belong
 function getWeekIndexFromDate(weeks: Week[], date: Date = new Date()) {
+  // The same date with different time doesn't equal so we have to null the time
+  date.setUTCHours(0, 0, 0, 0);
   // Show the next week on weekends
   const day = date.getUTCDay();
   if (day === 6 || day === 0) {

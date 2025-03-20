@@ -59,6 +59,7 @@ export function MenuSelector() {
       .then((x) => setMenus(x))
       .then(() => setIsLoading(false))
       .catch((e) => console.error(e));
+
   }, [weekCtx, toggle]);
 
   const toggleFunction = () => {
@@ -78,17 +79,18 @@ export function MenuSelector() {
 
   return (
 
+  return (
     <section className="flex flex-1 justify-center p-6">
 
-
       <div className="flex w-full flex-col justify-center gap-2">
-        {menus.length > 0 ? menus.map((x) => (
-          <DayMenu key={x.id} menu={x} toggleFunc={toggleFunction} />
-        )) :
-          (
-            <h1 className="text-orange-500 text-xl text-center">Pro tento týden ještě nelze objednat</h1>
-          )
-        }
+        {menus.length > 0 ? (
+          menus.map((x) => <DayMenu key={x.id} menu={x} />)
+        ) : (
+          <h1 className="text-center text-xl text-orange-500">
+            Pro tento týden ještě nelze objednat
+          </h1>
+        )}
+
       </div>
     </section>
   );
@@ -97,7 +99,6 @@ export function MenuSelector() {
 function DayMenu(props: { menu: Menus[number], toggleFunc: () => void }) {
 
   type errorMsg = { error: string | undefined };
-  const weekCtx = useWeekContext()
   const [error, dispatch, isPending] = useActionState<errorMsg, FormData>(
     (prevState: errorMsg, formData: FormData) =>
       makeUserChoiceFromForm(prevState, formData, props.menu.id),
@@ -113,41 +114,24 @@ function DayMenu(props: { menu: Menus[number], toggleFunc: () => void }) {
     dateStyle: "medium",
   });
 
-
-
   return (
     <>
-
       <div className="flex items-center justify-center">
         <div className="w-full md:w-1/2">
           <h3 className="text-lg font-semibold text-gray-900">
             <span>{capitalize(weekDay)}</span> - <span>{date}</span>
           </h3>
-
+          <p>{props.menu.soup.name}</p>
           <form action={dispatch}>
-            <div className="flex flex-row gap-2">
-              <div className="flex flex-row justify-start gap-2 items-center">
-                <label htmlFor={`${props.menu.id}`}>S sebou </label>
-                <input
-                  name="togo"
-                  type="checkbox"
-                  id={`${props.menu.id}`}
-                  defaultChecked={props.menu.userChoices[0]?.toGo == true}
-                  className="w-4 h-4 border-[1px] text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                />
-              </div>
-              <div className="flex flex-row justify-start gap-2 items-center">
-                <label htmlFor={`${props.menu.id}`}>Počet jídel </label>
-                <input
-                  name="amount"
-                  type="number"
-                  max={3}
-                  min={1}
-                  defaultValue={props.menu.userChoices[0]?.amount ?? 1}  
-                  className=" border-[1px] w-10 h-5 ps-1 text-orange-600 text-sm bg-gray-100 border-gray-300"
-                />
-              </div>
-            </div>
+            <label htmlFor={`${props.menu.id}`}>S sebou </label>
+
+            <input
+              name="togo"
+              type="checkbox"
+              id={`${props.menu.id}`}
+              defaultChecked={props.menu.userChoices[0]?.toGo == true}
+            />
+
             <ul className="rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900">
               {props.menu.menusToDishes.map((x) => (
                 <li
@@ -175,36 +159,18 @@ function DayMenu(props: { menu: Menus[number], toggleFunc: () => void }) {
                   </div>
                 </li>
               ))}
-              <li
-                className="w-full rounded-t-lg border-b border-gray-200"
-                key={crypto.randomUUID()}
-              >
-                <p className="ps-3 py-3"><span className="font-semibold">Polévka:</span> {props.menu.soup.name}</p>
-              </li>
             </ul>
             {isPending ? (
               <LoadingButton />
             ) : (
-              <>
-                <button
-                  type="submit"
-                  className="mb-2 me-2 mt-2 rounded-lg bg-orange-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-orange-600 focus:ring-4 focus:ring-orange-300"
-                  // onClick={() => { setTimeout(() => { window.location.reload() }, 100) }}
-                  onClick={() => { window.location.reload() }}
-                >
-                  Objednat
-                </button>
-                <a
-                  className="mb-2 me-2 mt-2 rounded-lg bg-red-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-600 focus:ring-4 focus:ring-red-300 cursor-pointer"
-                  onClick={async () => {
-                    await removeUserChoice(props.menu.id);
-                    window.location.reload()
-                  }}
-                >
-                  Vynulovat výběr
-                </a>
-              </>
-            )}
+              <button
+                type="submit"
+                className="mb-2 me-2 rounded-lg bg-orange-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-orange-600 focus:ring-4 focus:ring-orange-300"
+                onClick={(e) => console.log(e.target)}
+              >
+                Objednat
+              </button>
+
 
             <span className="font-semibold text-red-700">
               {error.error ?? ""}

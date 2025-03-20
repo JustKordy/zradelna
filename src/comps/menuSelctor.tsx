@@ -81,6 +81,8 @@ export function MenuSelector() {
 }
 
 function DayMenu(props: { menu: Menus[number]; toggleFunc: () => void }) {
+  const [menu, setMenu] = useState(props.menu);
+
   type errorMsg = { error: string | undefined };
   const [error, dispatch, isPending] = useActionState<errorMsg, FormData>(
     (prevState: errorMsg, formData: FormData) =>
@@ -104,7 +106,7 @@ function DayMenu(props: { menu: Menus[number]; toggleFunc: () => void }) {
           <h3 className="text-lg font-semibold text-gray-900">
             <span>{capitalize(weekDay)}</span> - <span>{date}</span>
           </h3>
-          <p>{props.menu.soup}</p>
+          <p>{menu.soup}</p>
           <form action={dispatch}>
             <label htmlFor={`${props.menu.id}`}>S sebou </label>
 
@@ -112,13 +114,13 @@ function DayMenu(props: { menu: Menus[number]; toggleFunc: () => void }) {
               name="togo"
               type="checkbox"
               id={`${props.menu.id}`}
-              defaultChecked={props.menu.menusToUserChoices[0]?.toGo}
+              checked={menu.menusToUserChoices[0]?.toGo}
             />
             <input
               name="amount"
               type="number"
               id={`${props.menu.id}`}
-              defaultValue={props.menu.menusToUserChoices[0]?.amount}
+              value={menu.menusToUserChoices[0]?.amount}
             />
 
             <ul className="rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900">
@@ -169,6 +171,14 @@ function DayMenu(props: { menu: Menus[number]; toggleFunc: () => void }) {
           </form>
         </div>
       </div>
+      <button
+        className="rounded-xl border-8 border-red-950 p-3"
+        onClick={() =>
+          setMenu((prevState) => ({ ...prevState, soup: "Abracadabra" }))
+        }
+      >
+        :(
+      </button>
     </>
   );
 }

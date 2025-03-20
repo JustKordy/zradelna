@@ -17,6 +17,7 @@
 - [ ] Add flowbite to the bundle
 - [ ] Change user choice
 - [ ] Add amount
+- [ ] Show user's choice on new selection
 
 ## Back-end
 

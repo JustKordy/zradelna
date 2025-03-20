@@ -15,8 +15,8 @@
 - [x] It doesn't error in prod :Week selection hooks create some bs React error. (Cannot update a component (`WeekContextProvider`) while rendering a different component (`WeekSelector`). To locate the bad setState() call inside `WeekSelector`, follow the stack trace as described in https://react.dev/link/setstate-in-render)
 - [ ] Make the <WeekSelector /> responsive
 - [ ] Add flowbite to the bundle
-- [ ] Change user choice
-- [ ] Add amount
+- [x] Change user choice
+- [x] Add amount
 - [ ] Show user's choice on new selection
 
 ## Back-end

@@ -111,3 +111,16 @@ export async function createMenuAction(formData: FormData) {
     };
   }
 }
+
+export async function userChoice() {
+  try {
+
+    const userChoice = db.query.userChoices.findMany()
+
+    return userChoice;
+    
+  } catch (error) {
+    console.error('Faild to get user choice', error);
+    return null;
+  }
+}

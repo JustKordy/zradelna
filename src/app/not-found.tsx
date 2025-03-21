@@ -29,7 +29,7 @@ export default function NotFound() {
       if (fetchedUsername) {
         setUsername(fetchedUsername);
       } else {
-        setUsername("AAAAAAAAHAHHHHHHH")
+        setUsername(" ")
       }
     }
 
@@ -80,8 +80,8 @@ export default function NotFound() {
           className="text-2xl font-semibold text-gray-800 md:text-3xl"
         >
           uživatel
-          <span className="font-bold text-orange-500">
-            {username ?? "Načítám uživatele..."}
+          <span className="font-bold text-orange-500 mx-2">
+            {username ?? "Načítám uživatele"}
           </span>
           zabloudil
         </motion.p>

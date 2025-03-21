@@ -57,7 +57,13 @@ export function MenuDisplay() {
                       Jídlo
                     </th>
                     <th scope="col" className="px-6 py-3">
-                      Počet
+                      Tady
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      S sebou
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Celkem
                     </th>
                   </tr>
                 </thead>
@@ -74,6 +80,7 @@ export function MenuDisplay() {
 }
 
 function Dishes(props: { order: Orders[number] }) {
+  console.log(props.order);
   return (
     <>
       {props.order.dish_totals.map((x) => (
@@ -88,7 +95,9 @@ function Dishes(props: { order: Orders[number] }) {
             >
               {x.dish}
             </th>
-            <td className="px-6 py-4">{Number(x.total)}</td>
+            <td className="px-6 py-4">{Number(x.here)}</td>
+            <td className="px-6 py-4">{Number(x.toGo)}</td>
+            <td className="px-6 py-4">{Number(x.here) + Number(x.toGo)}</td>
           </>
         </tr>
       ))}

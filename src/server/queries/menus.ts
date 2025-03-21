@@ -43,13 +43,18 @@ export async function getOrdersByMenuId(startDate: Date, endDate: Date) {
     .where(between(menus.date, startDate, endDate))
     .orderBy(menus.date);
 
-  // For each menu, get the dish totals
+  // For each menu, get the dish totals separated by toGo status
   const menusWithTotals = await Promise.all(
     menusList.map(async (menu) => {
       const dishTotals = await db
         .select({
           dish: userChoices.dish,
-          total: sql`SUM(${userChoices.amount})`.as("total"),
+          toGo: sql`SUM(CASE WHEN ${userChoices.toGo} = true THEN ${userChoices.amount} ELSE 0 END)`.as(
+            "togo_total",
+          ),
+          here: sql`SUM(CASE WHEN ${userChoices.toGo} = false THEN ${userChoices.amount} ELSE 0 END)`.as(
+            "here_total",
+          ),
         })
         .from(userChoices)
         .where(eq(userChoices.menuId, menu.id))

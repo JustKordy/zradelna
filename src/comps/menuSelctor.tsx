@@ -6,7 +6,11 @@ import { getMenusInRangeWithUserSelect } from "~/server/queries/menus";
 import { Spinner } from "./spinner";
 import { capitalize } from "~/lib/utils";
 import { LoadingButton } from "./loading-button";
-import { makeUserChoiceFromForm, signOut } from "~/server/queries/user";
+import {
+  makeUserChoiceFromForm,
+  signOut,
+  removeUserChoice,
+} from "~/server/queries/user";
 
 const sideBarOptions: Array<{
   id: number;
@@ -112,13 +116,15 @@ function DayMenu(props: { menu: Menus[number]; toggleFunc: () => void }) {
               name="togo"
               type="checkbox"
               id={`${props.menu.id}`}
-              checked={props.menu.menusToUserChoices[0]?.toGo}
+              defaultChecked={props.menu.menusToUserChoices[0]?.toGo}
             />
             <input
               name="amount"
               type="number"
+              min={1}
+              max={3}
               id={`${props.menu.id}`}
-              value={props.menu.menusToUserChoices[0]?.amount}
+              defaultValue={props.menu.menusToUserChoices[0]?.amount ?? 1}
             />
 
             <ul className="rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900">
@@ -156,11 +162,22 @@ function DayMenu(props: { menu: Menus[number]; toggleFunc: () => void }) {
                 <button
                   type="submit"
                   className="mb-2 me-2 rounded-lg bg-orange-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-orange-600 focus:ring-4 focus:ring-orange-300"
-                  onClick={(e) => console.log(e.target)}
+                  onClick={() => window.location.reload()}
                 >
                   Objednat
                 </button>
 
+                <a
+                  className="mb-2 me-2 cursor-pointer rounded-lg bg-red-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-600 focus:ring-4 focus:ring-red-300"
+                  onClick={async () => {
+                    await removeUserChoice(
+                      props.menu.menusToUserChoices[0]!.menuId,
+                    );
+                    window.location.reload();
+                  }}
+                >
+                  Vynulovat výběr
+                </a>
                 <span className="font-semibold text-red-700">
                   {error.error ?? ""}
                 </span>
@@ -169,14 +186,6 @@ function DayMenu(props: { menu: Menus[number]; toggleFunc: () => void }) {
           </form>
         </div>
       </div>
-      <button
-        className="rounded-xl border-8 border-red-950 p-3"
-        onClick={() =>
-          setMenu((prevState) => ({ ...prevState, soup: "Abracadabra" }))
-        }
-      >
-        :(
-      </button>
     </>
   );
 }

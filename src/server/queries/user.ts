@@ -108,6 +108,21 @@ export async function makeUserChoice(
   }
 }
 
+export async function removeUserChoice(menuID: number){
+
+  const user = await getUser()
+  if(!user) throw new Error("Unauthorized")
+
+  console.log(
+    `[INFO]: removing user choice: User: ${user.id} Menu: ${menuID}`,
+  );
+  try{
+    await db.delete(userChoices).where(eq(userChoices.menuId, menuID))
+  }catch(e){
+    console.log("Failed to remove user choice: ", e)
+  }
+}
+
 // Define a Zod schema for your form data
 const UserChoiceFormSchema = z.object({
   dish: z.string().min(1, { message: "Dish is required" }),

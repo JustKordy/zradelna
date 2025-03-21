@@ -2,7 +2,7 @@
 
 import { db } from "~/server/db";
 import { menus, userChoices } from "~/server/db/schema";
-import { between, eq } from "drizzle-orm";
+import { between, eq, sql } from "drizzle-orm";
 import { getUser } from "./user";
 import { z } from "zod";
 
@@ -33,6 +33,37 @@ export async function getMenusInRangeWithUserSelect(from: Date, to: Date) {
       },
     },
   });
+}
+
+// Count orders
+export async function getOrdersByMenuId(startDate: Date, endDate: Date) {
+  const menusList = await db
+    .select()
+    .from(menus)
+    .where(between(menus.date, startDate, endDate))
+    .orderBy(menus.date);
+
+  // For each menu, get the dish totals
+  const menusWithTotals = await Promise.all(
+    menusList.map(async (menu) => {
+      const dishTotals = await db
+        .select({
+          dish: userChoices.dish,
+          total: sql`SUM(${userChoices.amount})`.as("total"),
+        })
+        .from(userChoices)
+        .where(eq(userChoices.menuId, menu.id))
+        .groupBy(userChoices.dish);
+
+      return {
+        menu_id: menu.id,
+        menu_date: menu.date,
+        dish_totals: dishTotals,
+      };
+    }),
+  );
+
+  return menusWithTotals;
 }
 
 // CREATE

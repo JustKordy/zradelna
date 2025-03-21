@@ -36,8 +36,8 @@ export function MenuDisplay() {
   }
 
   return (
-    <div className="flex justify-center p-8">
-      <div className="w-[60%]">
+    <div className="flex justify-center lg:p-8">
+      <div className="w-full lg:w-[60%] xl:w-[60%]">
         {orders.map((x) => (
           <div key={x.menu_id} className="p-6">
             <div className="relative overflow-x-auto">
@@ -50,7 +50,7 @@ export function MenuDisplay() {
                   dateStyle: "medium",
                 })}
               </h2>
-              <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400 rtl:text-right">
+              <table className="w-full table-fixed text-left text-sm text-gray-500 dark:text-gray-400 rtl:text-right">
                 <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
                     <th scope="col" className="px-6 py-3">

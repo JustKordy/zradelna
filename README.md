@@ -18,6 +18,7 @@
 - [x] Change user choice
 - [x] Add amount
 - [ ] Show user's choice on new selection
+- [ ] When reloading, it kicks the user back to the current day
 
 ## Back-end
 

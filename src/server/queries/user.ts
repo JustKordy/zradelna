@@ -127,9 +127,9 @@ export async function removeUserChoice(menuID: number){
 const UserChoiceFormSchema = z.object({
   dish: z.string().min(1, { message: "Dish is required" }),
   togo: z
-    .enum(["on", "off"])
+    .any()
     .transform((val) => val === "on")
-    .default("off"),
+    .default(false),
   amount: z.coerce
     .number()
     .min(1, { message: "Amount must be greater than 0" })

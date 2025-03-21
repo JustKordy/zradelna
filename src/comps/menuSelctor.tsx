@@ -14,20 +14,20 @@ const sideBarOptions: Array<{
   icon: string;
   onClick: () => void;
 }> = [
-  {
-    id: 1,
-    name: "Domů",
-    icon: "fa-solid fa-house",
-    onClick: () => console.log("idk"),
-  },
-  {
-    id: 2,
-    name: "Odhlásit se",
-    icon: "fa-solid fa-sign-out",
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    onClick: () => signOut(),
-  },
-];
+    {
+      id: 1,
+      name: "Domů",
+      icon: "fa-solid fa-house",
+      onClick: () => console.log("idk"),
+    },
+    {
+      id: 2,
+      name: "Odhlásit se",
+      icon: "fa-solid fa-sign-out",
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      onClick: () => signOut(),
+    },
+  ];
 
 type Menus = Awaited<ReturnType<typeof getMenusInRangeWithUserSelect>>;
 
@@ -84,8 +84,14 @@ function DayMenu(props: { menu: Menus[number]; toggleFunc: () => void }) {
 
   type errorMsg = { error: string | undefined };
   const [error, dispatch, isPending] = useActionState<errorMsg, FormData>(
-    (prevState: errorMsg, formData: FormData) =>
-      makeUserChoiceFromForm(prevState, formData, props.menu.id),
+    async (prevState: errorMsg, formData: FormData) => {
+      const result = await makeUserChoiceFromForm(prevState, formData, props.menu.id);
+      // If there's no error, call the toggle function to update the parent state
+      if (!result.error) {
+        props.toggleFunc();
+      }
+      return result;
+    },
     {
       error: undefined,
     },
@@ -105,26 +111,33 @@ function DayMenu(props: { menu: Menus[number]; toggleFunc: () => void }) {
           <h3 className="text-lg font-semibold text-gray-900">
             <span>{capitalize(weekDay)}</span> - <span>{date}</span>
           </h3>
-          <p>{props.menu.soup}</p>
           <form action={dispatch}>
-            <label htmlFor={`${props.menu.id}`}>S sebou </label>
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-row gap-2">
+                <label htmlFor={`${props.menu.id}`}>S sebou </label>
 
-            <input
-              name="togo"
-              type="checkbox"
-              id={`${props.menu.id}`}
-              defaultChecked={props.menu.menusToUserChoices[0]?.toGo}
-            />
-            <input
-              name="amount"
-              type="number"
-              min={1}
-              max={3}
-              id={`${props.menu.id}`}
-              defaultValue={props.menu.menusToUserChoices[0]?.amount ?? 1}
-            />
+                <input
+                  name="togo"
+                  type="checkbox"
+                  id={`${props.menu.id}`}
+                  defaultChecked={props.menu.menusToUserChoices[0]?.toGo}
+                />
+              </div>
+              <div className="flex flex-row gap-2 justify-start items-center">
+                <p>Množství</p>
+                <input
+                  name="amount"
+                  type="number"
+                  min={1}
+                  max={3}
+                  id={`${props.menu.id}`}
+                  defaultValue={props.menu.menusToUserChoices[0]?.amount ?? 1}
+                  className="h-4 w-10 bg-gray-100"
+                />
+              </div>
+            </div>
 
-            <ul className="rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900">
+            <ul className="rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900 mb-3">
               {props.menu.dishes.map((x) => (
                 <li
                   className="w-full rounded-t-lg border-b border-gray-200"
@@ -151,6 +164,9 @@ function DayMenu(props: { menu: Menus[number]; toggleFunc: () => void }) {
                   </div>
                 </li>
               ))}
+              <li className="">
+                <p className="py-3 ms-2"><span className="font-semibold">Polévka: </span>{props.menu.soup}</p>
+              </li>
             </ul>
             {isPending ? (
               <LoadingButton />
@@ -159,14 +175,19 @@ function DayMenu(props: { menu: Menus[number]; toggleFunc: () => void }) {
                 <button
                   type="submit"
                   className="mb-2 me-2 rounded-lg bg-orange-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-orange-600 focus:ring-4 focus:ring-orange-300"
-                  onClick={() => window.location.reload()}
+                // Remove the page reload, let the form action handle the submission
                 >
                   Objednat
                 </button>
 
                 <a
                   className="mb-2 me-2 cursor-pointer rounded-lg bg-red-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-600 focus:ring-4 focus:ring-red-300"
-                  onClick={async() => {await removeUserChoice(props.menu.menusToUserChoices[0]!.menuId); window.location.reload()}}
+                  onClick={async () => {
+                      await removeUserChoice(props.menu.menusToUserChoices[0]!.menuId)
+                      .then(() => {
+                        props.toggleFunc()
+                      });
+                  }}
                 >
                   Vynulovat výběr
                 </a>

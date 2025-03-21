@@ -6,7 +6,11 @@ import { getMenusInRangeWithUserSelect } from "~/server/queries/menus";
 import { Spinner } from "./spinner";
 import { capitalize } from "~/lib/utils";
 import { LoadingButton } from "./loading-button";
-import { makeUserChoiceFromForm, signOut, removeUserChoice } from "~/server/queries/user";
+import {
+  makeUserChoiceFromForm,
+  signOut,
+  removeUserChoice,
+} from "~/server/queries/user";
 
 const sideBarOptions: Array<{
   id: number;
@@ -14,20 +18,20 @@ const sideBarOptions: Array<{
   icon: string;
   onClick: () => void;
 }> = [
-    {
-      id: 1,
-      name: "Domů",
-      icon: "fa-solid fa-house",
-      onClick: () => console.log("idk"),
-    },
-    {
-      id: 2,
-      name: "Odhlásit se",
-      icon: "fa-solid fa-sign-out",
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      onClick: () => signOut(),
-    },
-  ];
+  {
+    id: 1,
+    name: "Domů",
+    icon: "fa-solid fa-house",
+    onClick: () => console.log("idk"),
+  },
+  {
+    id: 2,
+    name: "Odhlásit se",
+    icon: "fa-solid fa-sign-out",
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    onClick: () => signOut(),
+  },
+];
 
 type Menus = Awaited<ReturnType<typeof getMenusInRangeWithUserSelect>>;
 
@@ -81,11 +85,14 @@ export function MenuSelector() {
 }
 
 function DayMenu(props: { menu: Menus[number]; toggleFunc: () => void }) {
-
   type errorMsg = { error: string | undefined };
   const [error, dispatch, isPending] = useActionState<errorMsg, FormData>(
     async (prevState: errorMsg, formData: FormData) => {
-      const result = await makeUserChoiceFromForm(prevState, formData, props.menu.id);
+      const result = await makeUserChoiceFromForm(
+        prevState,
+        formData,
+        props.menu.id,
+      );
       // If there's no error, call the toggle function to update the parent state
       if (!result.error) {
         props.toggleFunc();
@@ -123,7 +130,7 @@ function DayMenu(props: { menu: Menus[number]; toggleFunc: () => void }) {
                   defaultChecked={props.menu.menusToUserChoices[0]?.toGo}
                 />
               </div>
-              <div className="flex flex-row gap-2 justify-start items-center">
+              <div className="flex flex-row items-center justify-start gap-2">
                 <p>Množství</p>
                 <input
                   name="amount"
@@ -137,7 +144,7 @@ function DayMenu(props: { menu: Menus[number]; toggleFunc: () => void }) {
               </div>
             </div>
 
-            <ul className="rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900 mb-3">
+            <ul className="mb-3 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900">
               {props.menu.dishes.map((x) => (
                 <li
                   className="w-full rounded-t-lg border-b border-gray-200"
@@ -165,7 +172,10 @@ function DayMenu(props: { menu: Menus[number]; toggleFunc: () => void }) {
                 </li>
               ))}
               <li className="">
-                <p className="py-3 ms-2"><span className="font-semibold">Polévka: </span>{props.menu.soup}</p>
+                <p className="ms-2 py-3">
+                  <span className="font-semibold">Polévka: </span>
+                  {props.menu.soup}
+                </p>
               </li>
             </ul>
             {isPending ? (
@@ -175,7 +185,7 @@ function DayMenu(props: { menu: Menus[number]; toggleFunc: () => void }) {
                 <button
                   type="submit"
                   className="mb-2 me-2 rounded-lg bg-orange-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-orange-600 focus:ring-4 focus:ring-orange-300"
-                // Remove the page reload, let the form action handle the submission
+                  // Remove the page reload, let the form action handle the submission
                 >
                   Objednat
                 </button>
@@ -183,10 +193,10 @@ function DayMenu(props: { menu: Menus[number]; toggleFunc: () => void }) {
                 <a
                   className="mb-2 me-2 cursor-pointer rounded-lg bg-red-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-600 focus:ring-4 focus:ring-red-300"
                   onClick={async () => {
-                      await removeUserChoice(props.menu.menusToUserChoices[0]!.menuId)
-                      .then(() => {
-                        props.toggleFunc()
-                      });
+                    await removeUserChoice(
+                      props.menu.menusToUserChoices[0]!.menuId,
+                    );
+                    window.location.reload();
                   }}
                 >
                   Vynulovat výběr

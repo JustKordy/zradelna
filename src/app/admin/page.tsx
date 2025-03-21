@@ -24,11 +24,11 @@ function page() {
               </button>
               <button
                 onClick={() => {
-                  redirect("/admin/export");
+                  redirect("/admin/orders");
                 }}
                 className="rounded-lg bg-orange-400 p-5 text-4xl text-slate-50 duration-300 ease-in-out hover:-translate-y-2 hover:bg-orange-300 md:p-4 md:text-xl"
               >
-                Export
+                Objednávky
               </button>
             </div>
           </div>

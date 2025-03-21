@@ -18,6 +18,7 @@
 - [x] Add amount
 - [x] Show user's choice on new selection
 - [ ] When reloading, it kicks the user back to the current day
+- [ ] Show Next.js errors in dev
 
 ## Back-end
 

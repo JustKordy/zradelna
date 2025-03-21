@@ -182,32 +182,33 @@ function DayMenu(props: { menu: Menus[number]; toggleFunc: () => void }) {
               <LoadingButton />
             ) : (
               <>
-                {
-                  props.menu.date.getDate() < new Date().getDate() ? (
-                    <p className="text-red-500">Na tento týden již nelze objednat.</p>
-                  ) : (
-                    <>
-                      <button
-                        type="submit"
-                        className="mb-2 me-2 rounded-lg bg-orange-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-orange-600 focus:ring-4 focus:ring-orange-300"
+                {props.menu.date < new Date() ? (
+                  <p className="text-red-500">
+                    Na tento týden již nelze objednat.
+                  </p>
+                ) : (
+                  <>
+                    <button
+                      type="submit"
+                      className="mb-2 me-2 rounded-lg bg-orange-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-orange-600 focus:ring-4 focus:ring-orange-300"
                       // Remove the page reload, let the form action handle the submission
-                      >
-                        Objednat
-                      </button>
-                      <a
-                        className="mb-2 me-2 cursor-pointer rounded-lg bg-red-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-600 focus:ring-4 focus:ring-red-300"
-                        onClick={async () => {
-                          await removeUserChoice(props.menu.menusToUserChoices[0]!.menuId)
-                            .then(() => {
-                              props.toggleFunc()
-                            });
-                        }}
-                      >
-                        Vynulovat výběr
-                      </a>
-                    </>
-                  )
-                }
+                    >
+                      Objednat
+                    </button>
+                    <a
+                      className="mb-2 me-2 cursor-pointer rounded-lg bg-red-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-600 focus:ring-4 focus:ring-red-300"
+                      onClick={async () => {
+                        await removeUserChoice(
+                          props.menu.menusToUserChoices[0]!.menuId,
+                        ).then(() => {
+                          props.toggleFunc();
+                        });
+                      }}
+                    >
+                      Vynulovat výběr
+                    </a>
+                  </>
+                )}
 
                 {/* <button
                   type="submit"
@@ -218,15 +219,13 @@ function DayMenu(props: { menu: Menus[number]; toggleFunc: () => void }) {
 
                 </button> */}
 
-
-
                 <span className="font-semibold text-red-700">
                   {error.error ?? ""}
                 </span>
               </>
             )}
           </form>
-          <div className="w-full h-[1px] bg-black my-4"></div>
+          <div className="my-4 h-[1px] w-full bg-black"></div>
         </div>
       </div>
     </>
